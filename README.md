@@ -1,4 +1,4 @@
-jProtractor [![Build Status](https://api.shippable.com/projects/53d06a5d5bd164b80588e35e/badge/master)](https://www.shippable.com/projects/53d06a5d5bd164b80588e35e)
+jProtractor [![Build Status](http://img.shields.io/travis/caarlos0/jProtractor/master.svg?style=flat)]
 ===========
 
 > An angular/protractor implementation for Java Selenium API
