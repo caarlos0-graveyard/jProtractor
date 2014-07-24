@@ -38,8 +38,8 @@ in your pull request;
 
 ## TODO
 
-- setup maven-formatter-plugin for java and js;
-- setup integrations tests in shippable (phantom js?);
-- check the packaging that probably is wrong (packing too much);
-- write other selectors and base test class;
-- Rule the world.
+- [ ] setup maven-formatter-plugin for java and js;
+- [x] setup integrations tests in shippable (phantom js?);
+- [ ] check the packaging that probably is wrong (packing too much);
+- [ ] write other selectors and base test class;
+- [ ] Rule the world.
