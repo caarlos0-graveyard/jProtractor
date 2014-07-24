@@ -8,7 +8,7 @@ jProtractor ![Build Status](http://img.shields.io/travis/caarlos0/jProtractor/ma
 
 I imagine that a lot of folks have old projects covered with selenium
 tests written in Java, then, developers started to build a new interface
-using Angular.js, tests failed and it doesn't worth it to migrate all
+using Angular.js, tests failed and it's not worth it to migrate all
 WebPages and Tests to a brand new framework and language. Maybe the
 people who write the tests also aren't very good at JS.
 
