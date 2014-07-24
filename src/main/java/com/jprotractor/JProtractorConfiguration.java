@@ -50,6 +50,7 @@ public class JProtractorConfiguration {
 	}
 
 	public static void loadConfig(URL url) throws IOException {
+		System.out.println("URL = " + url);
 		loadDefaultProperties();
 		if (url != null)
 			properties.load(url.openStream());

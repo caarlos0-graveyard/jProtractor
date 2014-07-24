@@ -1,10 +1,15 @@
 package com.jprotractor;
 
-import static com.jprotractor.JProtractorConfiguration.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static com.jprotractor.JProtractorConfiguration.getAngularTimeout;
+import static com.jprotractor.JProtractorConfiguration.getPageLoadTimeout;
+import static com.jprotractor.JProtractorConfiguration.getPageSyncTimeout;
+import static com.jprotractor.JProtractorConfiguration.getWebDriverTimeout;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
