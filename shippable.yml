@@ -1,5 +1,12 @@
 language: java
 script: mvn test
+addons:
+   firefox: "30.0"
+before_script:
+  - "export DISPLAY=:99.0"
+  - "/etc/init.d/xvfb start"
+after_script:
+  - "/etc/init.d/xvfb stop"
 jdk:
   - oraclejdk7
   - openjdk7
