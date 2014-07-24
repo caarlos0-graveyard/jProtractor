@@ -1,0 +1,12 @@
+language: java
+script: mvn test
+jdk:
+  - oraclejdk7
+  - openjdk7
+  - oraclejdk8
+  - openjdk8
+notifications:
+  email:
+    on_success: never
+    on_failure: change
+
