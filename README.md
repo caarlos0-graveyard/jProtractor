@@ -1,4 +1,4 @@
-jProtractor [![Build Status](http://img.shields.io/travis/caarlos0/jProtractor/master.svg?style=flat)]
+jProtractor ![Build Status](http://img.shields.io/travis/caarlos0/jProtractor/master.svg?style=flat)
 ===========
 
 > An angular/protractor implementation for Java Selenium API
