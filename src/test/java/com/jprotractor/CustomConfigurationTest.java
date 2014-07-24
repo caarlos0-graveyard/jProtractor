@@ -8,8 +8,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

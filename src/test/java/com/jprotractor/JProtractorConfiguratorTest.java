@@ -1,8 +1,10 @@
 package com.jprotractor;
 
-import static com.jprotractor.JProtractorConfiguration.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static com.jprotractor.JProtractorConfiguration.DEFAULT_ANGULAR_TIMEOUT;
+import static com.jprotractor.JProtractorConfiguration.DEFAULT_PAGE_LOAD_TIMEOUT;
+import static com.jprotractor.JProtractorConfiguration.DEFAULT_WEBDRIVER_TIMEOUT;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,7 +32,7 @@ public class JProtractorConfiguratorTest {
 		assertThat(driver.getImplicitTimeout(),
 				equalTo(DEFAULT_WEBDRIVER_TIMEOUT));
 	}
-	
+
 	@Test
 	public void testScriptTimeout() throws Exception {
 		assertThat(driver.getScriptTimeout(),
