@@ -31,7 +31,15 @@ Nope.
 ## Contributing
 
 - We use TDD here. So don't even submit a pull request without a test;
-- Please respect the code formatting rules (TODO: maven-formatter-plugin);
+- Please respect the code formatting rules;
 - Describe well the issue you're fixing or the feature you're implementing
 in your pull request;
 - Needless to say, but, respect the others!
+
+## TODO
+
+- setup maven-formatter-plugin for java and js;
+- setup integrations tests in shippable (phantom js?);
+- check the packaging that probably is wrong (packing too much);
+- write other selectors and base test class;
+- Rule the world.
