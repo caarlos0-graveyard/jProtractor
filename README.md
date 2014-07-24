@@ -12,7 +12,7 @@ using Angular.js, tests failed and it doesn't worth it to migrate all
 WebPages and Tests to a brand new framework and language. Maybe the
 people who write the tests also aren't very good at JS.
 
-In this scenario, you might want the [angular/protractor](/angular/protractor)
+In this scenario, you might want the [angular/protractor](http://github.com/angular/protractor)
 features without have to do all this migration.
 
 This project has the objective to fix that. Protractor isn't any rocket science
