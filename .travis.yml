@@ -1,5 +1,5 @@
 language: java
-script: mvn test
+script: mvn test integration-test
 addons:
    firefox: "30.0"
 before_install:

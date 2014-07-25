@@ -1,4 +1,4 @@
-package com.jprotractor;
+package com.jprotractor.unit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.jprotractor.NgBy;
 import com.jprotractor.mocks.JavascriptExecutorSpy;
 
 public class NgByTest {

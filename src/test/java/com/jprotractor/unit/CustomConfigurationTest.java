@@ -1,4 +1,4 @@
-package com.jprotractor;
+package com.jprotractor.unit;
 
 import static com.jprotractor.JProtractorConfiguration.getAngularTimeout;
 import static com.jprotractor.JProtractorConfiguration.getPageLoadTimeout;
@@ -12,6 +12,8 @@ import java.net.URL;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.jprotractor.JProtractorConfiguration;
 
 public class CustomConfigurationTest {
 

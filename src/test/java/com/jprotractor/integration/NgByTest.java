@@ -1,4 +1,4 @@
-package com.jprotractor;
+package com.jprotractor.integration;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -10,16 +10,23 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-public class NgByIntegrationTest {
+import com.jprotractor.JProtractorConfiguration;
+import com.jprotractor.JProtractorConfigurator;
+import com.jprotractor.NgBy;
+import com.jprotractor.categories.Integration;
+
+@Category(Integration.class)
+public class NgByTest {
 	private static WebDriver driver;
 
 	@BeforeClass
 	public static void setup() throws IOException {
-		JProtractorConfiguration.loadConfig(NgByIntegrationTest.class
+		JProtractorConfiguration.loadConfig(NgByTest.class
 				.getClassLoader().getResource("integrationTests.properties"));
 		driver = JProtractorConfigurator.setup(new FirefoxDriver());
 	}

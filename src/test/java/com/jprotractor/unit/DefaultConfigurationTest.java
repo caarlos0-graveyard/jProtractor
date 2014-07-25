@@ -1,4 +1,4 @@
-package com.jprotractor;
+package com.jprotractor.unit;
 
 import static com.jprotractor.JProtractorConfiguration.*;
 import static org.hamcrest.CoreMatchers.*;
