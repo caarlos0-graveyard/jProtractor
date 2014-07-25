@@ -14,6 +14,7 @@ public class WebDriverSpy implements WebDriver {
 	private long pageLoadTimeout = 0;
 	private long implicitWait = 0;
 	private long scriptTimeout = 0;
+	private boolean enchanced;
 
 	public long getPageLoadTimeout() {
 		return pageLoadTimeout;
@@ -87,18 +88,21 @@ public class WebDriverSpy implements WebDriver {
 					@Override
 					public Timeouts setScriptTimeout(long time, TimeUnit unit) {
 						scriptTimeout = time;
+						enchanced = true;
 						return this;
 					}
 
 					@Override
 					public Timeouts pageLoadTimeout(long time, TimeUnit unit) {
 						pageLoadTimeout = time;
+						enchanced = true;
 						return this;
 					}
 
 					@Override
 					public Timeouts implicitlyWait(long time, TimeUnit unit) {
 						implicitWait = time;
+						enchanced = true;
 						return this;
 					}
 				};
@@ -154,5 +158,9 @@ public class WebDriverSpy implements WebDriver {
 	@Override
 	public TargetLocator switchTo() {
 		return null;
+	}
+
+	public boolean hasBeenEnchanced() {
+		return enchanced;
 	}
 }

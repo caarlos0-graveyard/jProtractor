@@ -2,7 +2,7 @@ package com.jprotractor.mocks;
 
 import org.openqa.selenium.JavascriptExecutor;
 
-public class JavascriptExecutorSpy extends WebDriverSpy implements
+public class JavascriptExecutorMock extends WebDriverSpy implements
 		JavascriptExecutor {
 
 	@Override

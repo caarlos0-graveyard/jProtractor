@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
-public class JProtractorConfiguration {
+public class NgConfiguration {
 	private static final String PAGE_LOAD_TIMEOUT = "PAGE_LOAD_TIMEOUT";
 	private static final String WEBDRIVER_TIMEOUT = "WEBDRIVER_TIMEOUT";
 	private static final String ANGULAR_TIMEOUT = "ANGULAR_TIMEOUT";

@@ -15,10 +15,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import com.jprotractor.JProtractorConfiguration;
-import com.jprotractor.JProtractorConfigurator;
 import com.jprotractor.NgBy;
+import com.jprotractor.NgConfiguration;
 import com.jprotractor.categories.Integration;
+import com.jprotractor.unit.NgDriverEnchancer;
 
 @Category(Integration.class)
 public class NgByTest {
@@ -26,9 +26,9 @@ public class NgByTest {
 
 	@BeforeClass
 	public static void setup() throws IOException {
-		JProtractorConfiguration.loadConfig(NgByTest.class
+		NgConfiguration.loadConfig(NgByTest.class
 				.getClassLoader().getResource("integrationTests.properties"));
-		driver = JProtractorConfigurator.setup(new FirefoxDriver());
+		driver = NgDriverEnchancer.enchance(new FirefoxDriver());
 	}
 
 	@Before

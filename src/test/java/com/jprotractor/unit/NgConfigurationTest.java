@@ -1,13 +1,13 @@
 package com.jprotractor.unit;
 
-import static com.jprotractor.JProtractorConfiguration.DEFAULT_ANGULAR_TIMEOUT;
-import static com.jprotractor.JProtractorConfiguration.DEFAULT_PAGE_LOAD_TIMEOUT;
-import static com.jprotractor.JProtractorConfiguration.DEFAULT_PAGE_SYNC_TIMEOUT;
-import static com.jprotractor.JProtractorConfiguration.DEFAULT_WEBDRIVER_TIMEOUT;
-import static com.jprotractor.JProtractorConfiguration.getAngularTimeout;
-import static com.jprotractor.JProtractorConfiguration.getPageLoadTimeout;
-import static com.jprotractor.JProtractorConfiguration.getPageSyncTimeout;
-import static com.jprotractor.JProtractorConfiguration.getWebDriverTimeout;
+import static com.jprotractor.NgConfiguration.DEFAULT_ANGULAR_TIMEOUT;
+import static com.jprotractor.NgConfiguration.DEFAULT_PAGE_LOAD_TIMEOUT;
+import static com.jprotractor.NgConfiguration.DEFAULT_PAGE_SYNC_TIMEOUT;
+import static com.jprotractor.NgConfiguration.DEFAULT_WEBDRIVER_TIMEOUT;
+import static com.jprotractor.NgConfiguration.getAngularTimeout;
+import static com.jprotractor.NgConfiguration.getPageLoadTimeout;
+import static com.jprotractor.NgConfiguration.getPageSyncTimeout;
+import static com.jprotractor.NgConfiguration.getWebDriverTimeout;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -19,16 +19,16 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 
-import com.jprotractor.JProtractorConfiguration;
+import com.jprotractor.NgConfiguration;
 
 @RunWith(Enclosed.class)
-public class ConfigurationTest {
+public class NgConfigurationTest {
 	public static class WithCustomConfiguration {
 		@BeforeClass
 		public static void setup() throws Exception {
-			URL properties = ConfigurationTest.class.getClassLoader()
+			URL properties = NgConfigurationTest.class.getClassLoader()
 					.getResource("jprotractor.properties");
-			JProtractorConfiguration.loadConfig(properties);
+			NgConfiguration.loadConfig(properties);
 		}
 
 		@Test
@@ -53,7 +53,7 @@ public class ConfigurationTest {
 
 		@AfterClass
 		public static void revert() throws Exception {
-			JProtractorConfiguration.loadConfig(null);
+			NgConfiguration.loadConfig(null);
 		}
 	}
 

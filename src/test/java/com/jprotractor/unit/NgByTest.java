@@ -9,14 +9,14 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 
 import com.jprotractor.NgBy;
-import com.jprotractor.mocks.JavascriptExecutorSpy;
+import com.jprotractor.mocks.JavascriptExecutorMock;
 
 public class NgByTest {
-	private static JavascriptExecutorSpy driver;
+	private static JavascriptExecutorMock driver;
 
 	@BeforeClass
 	public static void init() {
-		driver = new JavascriptExecutorSpy();
+		driver = new JavascriptExecutorMock();
 	}
 
 	@Test
