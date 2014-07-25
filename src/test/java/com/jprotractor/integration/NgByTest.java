@@ -16,7 +16,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.jprotractor.NgBy;
-import com.jprotractor.NgConfiguration;
 import com.jprotractor.categories.Integration;
 import com.jprotractor.unit.NgDriverEnchancer;
 
@@ -26,9 +25,8 @@ public class NgByTest {
 
 	@BeforeClass
 	public static void setup() throws IOException {
-		NgConfiguration.loadConfig(NgByTest.class
+		driver = NgDriverEnchancer.enchance(new FirefoxDriver(), NgByTest.class
 				.getClassLoader().getResource("integrationTests.properties"));
-		driver = NgDriverEnchancer.enchance(new FirefoxDriver());
 	}
 
 	@Before

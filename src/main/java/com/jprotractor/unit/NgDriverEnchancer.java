@@ -1,9 +1,5 @@
 package com.jprotractor.unit;
 
-import static com.jprotractor.NgConfiguration.getAngularTimeout;
-import static com.jprotractor.NgConfiguration.getPageLoadTimeout;
-import static com.jprotractor.NgConfiguration.getWebDriverTimeout;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -21,21 +17,20 @@ public class NgDriverEnchancer {
 
 	public static WebDriver enchance(WebDriver driver, URL configFile)
 			throws IOException {
-		NgConfiguration.loadConfig(configFile);
-		return setup(driver);
+		return setup(driver, new NgConfiguration(configFile));
 	}
 
-	private static WebDriver setup(WebDriver driver) {
+	private static WebDriver setup(WebDriver driver, NgConfiguration config) {
 		if (driver == null)
 			return null;
-		manageTimeouts(driver);
+		manageTimeouts(driver, config);
 		return driver;
 	}
 
-	private static void manageTimeouts(WebDriver driver) {
+	private static void manageTimeouts(WebDriver driver, NgConfiguration config) {
 		driver.manage().timeouts()
-				.pageLoadTimeout(getPageLoadTimeout(), TIMEUNIT)
-				.implicitlyWait(getWebDriverTimeout(), TIMEUNIT)
-				.setScriptTimeout(getAngularTimeout(), TIMEUNIT);
+				.pageLoadTimeout(config.getPageLoadTimeout(), TIMEUNIT)
+				.implicitlyWait(config.getWebDriverTimeout(), TIMEUNIT)
+				.setScriptTimeout(config.getAngularTimeout(), TIMEUNIT);
 	}
 }
