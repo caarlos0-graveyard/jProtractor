@@ -30,27 +30,28 @@ public class NgByTest {
 				.getClassLoader().getResource("integrationTests.properties"));
 		driver = JProtractorConfigurator.setup(new FirefoxDriver());
 	}
-	
+
 	@Before
 	public void beforeEach() {
 		driver.navigate().to("https://angularjs.org");
 	}
 
+	@AfterClass
+	public static void teardown() {
+		driver.close();
+	}
+
 	@Test
 	public void testByModel() throws Exception {
-		assertThat(driver.findElement(NgBy.model("yourName")), notNullValue());
+		assertThat(driver.findElement(NgBy.model("yourName")),
+				notNullValue());
 	}
-	
+
 	@Test
 	public void testByBinding() throws Exception {
 		driver.findElement(NgBy.model("yourName")).sendKeys("jProtractor");
 		WebElement element = driver.findElements(NgBy.binding(
 				"yourName", driver)).get(0);
 		assertThat(element.getText(), equalTo("Hello jProtractor!"));
-	}
-
-	@AfterClass
-	public static void teardown() {
-		driver.close();
 	}
 }
