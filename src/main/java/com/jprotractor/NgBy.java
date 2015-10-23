@@ -5,11 +5,8 @@ import org.openqa.selenium.WebDriver;
 
 import com.jprotractor.bys.ByBinding;
 import com.jprotractor.bys.ByModel;
-<<<<<<< HEAD
 import com.jprotractor.bys.ByRepeater;
-=======
 import com.jprotractor.bys.ByOptions;
->>>>>>> upstream/master
 
 public abstract class NgBy extends By {
 	public static By model(final String model) {
