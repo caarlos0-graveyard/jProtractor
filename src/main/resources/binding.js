@@ -1,3 +1,12 @@
+/**
+ * Find a list of elements in the page by their angular binding.
+ *
+ * @param {string} binding The binding, e.g. {{cat.name}}.
+ * @param {boolean} exactMatch Whether the binding needs to be matched exactly
+ * @param {Element} using The scope of the search.
+ *
+ * @return {Array.<Element>} The elements containing the binding.
+ */
 var findBindings = function(binding, exactMatch, using) {
   using = using || document;
   var bindings = using.getElementsByClassName('ng-binding');
