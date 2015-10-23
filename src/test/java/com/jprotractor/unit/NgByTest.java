@@ -34,4 +34,12 @@ public class NgByTest {
 		assertThat(by.toString(),
 				equalTo("By.binding: person.address"));
 	}
+
+	@Test
+	public void testRepeater() throws Exception {
+		By by = NgBy.repeater("person.address", driver);
+		assertThat(by, notNullValue());
+		assertThat(by.toString(),
+				equalTo("By.repeater: person.address"));
+	}
 }
