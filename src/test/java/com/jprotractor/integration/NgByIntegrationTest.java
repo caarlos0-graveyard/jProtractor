@@ -80,7 +80,7 @@ import com.jprotractor.unit.NgDriverEnchancer;
 			System.out.println(ex.toString());
 		}
 
-		ngDriver = NgDriverEnchancer.enchance(seleniumDriver , NgByTestIntegrationTest.class
+		ngDriver = NgDriverEnchancer.enchance(seleniumDriver , NgByIntegrationTest.class
 				.getClassLoader().getResource("integrationTests.properties"));
 	}
 

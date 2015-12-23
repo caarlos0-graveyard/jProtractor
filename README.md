@@ -15,7 +15,7 @@ Sample
     FirefoxProfile profile = new ProfilesIni().getProfile("default");
     capabilities.setCapability("firefox_profile", profile);
     seleniumDriver = new RemoteWebDriver(new URL("http://127.0.0.1:4444/wd/hub"), capabilities);
-    ngDriver = NgDriverEnchancer.enchance(seleniumDriver , NgByTestIntegrationTest.class
+    ngDriver = NgDriverEnchancer.enchance(seleniumDriver , NgByIntegrationTest.class
                                 .getClassLoader().getResource("integrationTests.properties"));
 
     ngDriver.navigate().to("http://juliemr.github.io/protractor-demo/");
