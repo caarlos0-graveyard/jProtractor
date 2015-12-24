@@ -1,50 +1,44 @@
-Info
-----
+jProtractor [![Build Status](http://img.shields.io/travis/caarlos0/jProtractor/master.svg?style=flat)](https://travis-ci.org/caarlos0/jProtractor)
+===========
 
-Origins: 
-  - [jProtractor](https://github.com/caarlos0/jProtractor)
-  - [angular/protractor](https://github.com/angular/protractor) 
-  - [bbaia/protractor-net](https://github.com/bbaia/protractor-net)
-  - [sergueik/protractor-net](https://github.com/sergueik/powershell_selenium/tree/master/csharp/protractor-net)
+> An angular/protractor implementation for Java Selenium API
 
-Goal is to close the gap between [jProtractor locator snippets](https://github.com/sergueik/jProtractor/tree/master/src/main/resources) and [genuine protractor ones](https://github.com/angular/protractor/blob/master/lib/clientsidescripts.js)
-Sample
-------
-```
-    DesiredCapabilities capabilities =   new DesiredCapabilities("firefox", "", Platform.ANY);
-    FirefoxProfile profile = new ProfilesIni().getProfile("default");
-    capabilities.setCapability("firefox_profile", profile);
-    seleniumDriver = new RemoteWebDriver(new URL("http://127.0.0.1:4444/wd/hub"), capabilities);
-    ngDriver = NgDriverEnchancer.enchance(seleniumDriver , NgByIntegrationTest.class
-                                .getClassLoader().getResource("integrationTests.properties"));
 
-    ngDriver.navigate().to("http://juliemr.github.io/protractor-demo/");
-    WebElement element = ngDriver.findElement(NgBy.model("first", ngDriver));
-    assertThat(element,notNullValue());
-    element.sendKeys("40");
-    element = ngDriver.findElement(NgBy.model("second", ngDriver));
-    element.sendKeys("2");
-    element = ngDriver.findElement(NgBy.options("value for (key, value) in operators", ngDriver));
-    assertThat(element,notNullValue());
-    element.click();
-    element = ngDriver.findElement(NgBy.buttonText("Go", ngDriver));
-    assertThat(element,notNullValue());
-    element = seleniumDriver.findElement(By.xpath("//button[contains(.,'Go')]"));
-    assertThat(element,notNullValue());
-    element.click();
-    Thread.sleep(5000);
-    element = ngDriver.findElement(NgBy.binding("latest", ngDriver)); 
-    assertThat(element,notNullValue());
-    assertThat(element.getText(), equalTo("42"));
-    highlight(element, 100);
-    ngDriver.close();
-    seleniumDriver.quit();
+## Why?
 
-```
-Testing
--------
-PhantomJs allows loading Angular samples as `file://` content.
+I imagine that a lot of folks have old projects covered with selenium
+tests written in Java, then, developers started to build a new interface
+using Angular.js, tests failed and it's not worth it to migrate all
+WebPages and Tests to a brand new framework and language. Maybe the
+people who write the tests also aren't very good at JS.
 
-Author
-------
-[Serguei Kouzmine](kouzmine_serguei@yahoo.com)
+In this scenario, you might want the [angular/protractor](http://github.com/angular/protractor)
+features without have to do all this migration.
+
+This project has the objective to fix that. Protractor isn't any rocket science
+with dark magic inside it, it is just JavaScript and the core Selenium API, so,
+it should work.
+
+## Actual state
+
+I just started it. I don't know yet how I will do some features, but I will be
+working on it. Feel free to contribute if you want.
+
+## tl;dr: Can I use it yet?
+
+Nope.
+
+## Contributing
+
+- We use TDD here. So don't even submit a pull request without a test;
+- Please respect the code formatting rules;
+- Describe well the issue you're fixing or the feature you're implementing
+in your pull request;
+- Needless to say, but, respect the others!
+
+## TODO
+
+- [ ] setup maven-formatter-plugin for java and js;
+- [ ] check the packaging that probably is wrong (packing too much);
+- [ ] write other selectors and base test class;
+- [ ] Rule the world.
