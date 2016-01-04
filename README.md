@@ -3,6 +3,11 @@ jProtractor [![Build Status](http://img.shields.io/travis/caarlos0/jProtractor/m
 
 > An angular/protractor implementation for Java Selenium API
 
+Note
+----
+Please consider the project [Protractor-jvm](https://github.com/sergueik/Protractor-jvm) for the latest development - it is merged with this project and contrains a much richer functionality.
+
+
 
 ## Why?
 

@@ -7,30 +7,30 @@ import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-// model.js tries all prefixes 'ng-', 'ng_', 'data-ng-', 'x-ng-', 'ng\\:'
-public class ByModel extends JsBy {
-	private final String model;
+public class ByRepeater extends JsBy {
+	private final String repeater;
 
-	public ByModel(String model, WebDriver executor) {
+	public ByRepeater(String repeater, WebDriver executor) {
 		super(executor);
-		this.model = model;
+		this.repeater = repeater;
 	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<WebElement> findElements(SearchContext context) {
 		return (List<WebElement>) executor.executeScript(getScriptContent()
-				+ "return findByModel(arguments[0], arguments[1])", model,
+				+ "return findAllRepeaterRows(arguments[0], arguments[1])", repeater,
 				getElement(context));
 	}
 
 	@Override
 	public String toString() {
-		return "By.model: " + model;
+		return "By.repeater: " + repeater;
 	}
 
 	@Override
 	protected String getFilename() {
-		return "model.js";
+		return "repeater.js";
 	}
 
 }
