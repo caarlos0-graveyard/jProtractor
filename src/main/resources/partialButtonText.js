@@ -2,11 +2,11 @@
  * Find buttons by textual content.
  *
  * arguments[0] {Element} The scope of the search.
- * arguments[1] {string} The exact text to match.
+ * arguments[1] {string} The partial text to match.
  *
  * @return {Array.Element} The matching elements.
  */
-var findByButtonText = function(searchText, using) {
+var findByPartialButtonText = function(searchText, using) {
     using = using || document;
     var elements = using.querySelectorAll('button, input[type="button"], input[type="submit"]');
     var matches = [];
@@ -18,7 +18,7 @@ var findByButtonText = function(searchText, using) {
         } else {
             elementText = element.value;
         }
-        if (elementText.trim() === searchText) {
+        if (elementText.indexOf(searchText) > -1) {
             matches.push(element);
         }
     }
@@ -26,4 +26,4 @@ var findByButtonText = function(searchText, using) {
 };
 var using = arguments[0] || document;
 var searchText = arguments[1];
-return findByButtonText(searchText, using);
+return findByPartialButtonText(searchText, using);
