@@ -17,6 +17,11 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,7 +85,7 @@ import com.jprotractor.NgWebElement;
 	static int width = 600;
 	static int height = 400;
 	// set to true for Desktop, false for CI testing
-	static boolean isDestopTesting = true; 
+	static boolean isDestopTesting = false; 
 
 	@BeforeClass
 	public static void setup() throws IOException {
@@ -107,7 +112,18 @@ import com.jprotractor.NgWebElement;
 			return new PhantomJSDriver();
 		}
 	}
-
+	
+	protected static String getScriptContent(String filename) {
+		try {
+			URI uri = NgByIntegrationTest.class.getClassLoader().getResource(filename).toURI();
+		System.err.println(uri.toString());
+		return uri.toString();
+		// multi-catch statement is not supported in -source 1.6
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	@AfterClass
 	public static void teardown() {
 		ngDriver.close();
@@ -235,7 +251,8 @@ import com.jprotractor.NgWebElement;
 			assertThat(selectCustomer.getAttribute("id"),containsString("userSelect"));
 			List<WebElement> customers = new NgWebElement(ngDriver,selectCustomer).findElements(NgBy.repeater("cust in Customers"));
 			// pick random customer to log in
-			WebElement customer = customers.get((int)(Math.random()*customers.size()));
+			int random_customer_index = 1 + (int)(Math.random() * (customers.size() - 1)) ;
+			WebElement customer = customers.get(random_customer_index);
 			System.err.println(customer.getText());
 			customer.click();
 			NgWebElement ng_selectCurrencies = ngDriver.findElement(NgBy.model("currency"));
@@ -248,6 +265,11 @@ import com.jprotractor.NgWebElement;
 			WebElement submitButton = ngDriver.getWrappedDriver().findElement(By.xpath("/html/body//form/button[@type='submit']"));
 			assertThat(submitButton.getText(),containsString("Process"));
 			submitButton.click();
+			// workaround against travis detecting exception from phantomJS
+			if (!isDestopTesting) {
+				return;
+			}
+
 			try{
 				alert = seleniumDriver.switchTo().alert();
 				String alert_text = alert.getText();
@@ -366,6 +388,10 @@ import com.jprotractor.NgWebElement;
 			Object[] addCustomerButtonElements = ngDriver.findElements(NgBy.partialButtonText("Add Customer")).toArray();
 			WebElement addCustomerButtonElement = (WebElement) addCustomerButtonElements[1];
 			addCustomerButtonElement.submit();
+			// workaround against travis detecting exception from phantomJS
+			if (!isDestopTesting) {
+				return;
+			}
 			try {
 				alert = seleniumDriver.switchTo().alert();
 			} catch (NoAlertPresentException ex){
@@ -392,9 +418,7 @@ import com.jprotractor.NgWebElement;
 			Thread.sleep(1000);
 			
 			wait.until(ExpectedConditions.visibilityOf(ngDriver.findElement(NgBy.repeater("cust in Customers"))));
-
-			Enumeration<WebElement> customers = Collections.enumeration(ngDriver.findElements(NgBy.repeater("cust in Customers")));
-			
+			Enumeration<WebElement> customers = Collections.enumeration(ngDriver.findElements(NgBy.repeater("cust in Customers")));			
 			WebElement currentCustomer = null;
 			while (customers.hasMoreElements()){
 				currentCustomer = customers.nextElement();
@@ -559,5 +583,62 @@ import com.jprotractor.NgWebElement;
 			assertThat(element.getText(), equalTo("42"));
 			highlight(element, 100);
 		}
+	}
+	
+	public static class LocalFileTests {
+
+		public static String localFile;
+		
+		@Test
+		public void testEvaluate() throws Exception {
+			localFile = "ng_service_example.htm";
+			ngDriver.navigate().to(getScriptContent(localFile));
+			Enumeration<WebElement> elements = Collections.enumeration(ngDriver.findElements(NgBy.repeater("person in people")));
+			while (elements.hasMoreElements()){
+				WebElement currentElement = elements.nextElement();
+				WebElement personName = currentElement.findElement(NgBy.binding("person.Name"));
+				Object personCountry = new NgWebElement(ngDriver,currentElement).evaluate("person.Country");
+				if (currentElement.getText().indexOf("Harry Potter") >= 0 ){
+					System.err.println(currentElement.getText());
+					currentElement.click();
+				}
+			}
+		}
+
+		@Test
+		public void testFindElementByRepeaterColumn() throws Exception {
+
+			localFile = "ng_service_example.htm";
+			ngDriver.navigate().to(getScriptContent(localFile));
+			Iterator<WebElement> countryColumns = ngDriver.findElements(NgBy.repeaterColumn("person in people", "person.Country")).iterator();
+			while (countryColumns.hasNext() ) {
+				WebElement countryColumn = (WebElement) countryColumns.next();
+				if (countryColumn.getText().equalsIgnoreCase("Mexico") ){
+					highlight(countryColumn);
+				}
+			}
+		}
+
+		@Test
+		public void testFindElementByRepeaterWithBeginEnd() throws Exception {
+
+			localFile = "ng_repeat_start_and_ng_repeat_end_example.htm";
+			ngDriver.navigate().to(getScriptContent(localFile));			
+			List<WebElement> elements = ngDriver.findElements(NgBy.repeater("definition in definitions"));
+            assertTrue(elements.get(0).isDisplayed());
+			assertThat(elements.get(0).getText(),containsString("Foo"));
+		}
+		
+		@Test
+		public void testFindElementByOptions() throws Exception {
+
+			localFile = "ng_options_with_object_example.htm";
+			ngDriver.navigate().to(getScriptContent(localFile));			
+			List<WebElement> elements = ngDriver.findElements(NgBy.options("c.name for c in colors"));
+            assertTrue(elements.size() == 5);
+			assertThat(elements.get(0).getText(),containsString("black"));
+			assertThat(elements.get(1).getText(),containsString("white"));
+		}
+				
 	}
 }
