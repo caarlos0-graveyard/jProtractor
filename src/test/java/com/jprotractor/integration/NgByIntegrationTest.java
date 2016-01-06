@@ -80,7 +80,7 @@ import com.jprotractor.NgWebElement;
 	static int width = 600;
 	static int height = 400;
 	// set to true for Desktop, false for CI testing
-	static boolean isDestopTesting = true; 
+	static boolean isDestopTesting = false; 
 
 	@BeforeClass
 	public static void setup() throws IOException {
