@@ -1,5 +1,6 @@
 package com.jprotractor;
 
+import com.jprotractor.scripts.WaitForAngular;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -11,15 +12,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 
 public class NgWebDriver implements WebDriver, WrapsDriver {
-    @SuppressWarnings("unused")
-    private String AngularDeferBootstrap = "NG_DEFER_BOOTSTRAP!";
-
     private WebDriver driver;
     private JavascriptExecutor jsExecutor;
     private String rootElement;
     @SuppressWarnings("unused")
     private NgModule[] mockModules;
-    public boolean IgnoreSynchronization;
+    public boolean ignoresync;
     // little max iteration count for protector
     public int maxIterations;
     private int iterationCount;
@@ -32,18 +30,25 @@ public class NgWebDriver implements WebDriver, WrapsDriver {
         iterationCount = 0;
     }
 
-    public NgWebDriver(WebDriver driver, boolean ignoreSync) {
+    public NgWebDriver(final WebDriver driver, final boolean ignoreSync) {
         this(driver);
-        this.IgnoreSynchronization = ignoreSync;
+        this.ignoresync = ignoreSync;
     }
 
-    public NgWebDriver(WebDriver driver, NgModule[] mockModules) {
+    public NgWebDriver(final WebDriver driver, final NgModule[] mockModules) {
         this(driver, "body", mockModules);
     }
 
-    public NgWebDriver(WebDriver driver, String rootElement, NgModule[] mockModules) {
+    public NgWebDriver(
+        final WebDriver driver,
+        final String rootElement,
+        final NgModule[] mockModules
+    ) {
         if (!(driver instanceof JavascriptExecutor)) {
-            throw new WebDriverException("The WebDriver instance must implement the JavaScriptExecutor interface.");
+            throw new WebDriverException(
+                "The WebDriver instance must implement the " +
+                    "JavaScriptExecutor interface."
+            );
         }
 
         this.driver = driver;
@@ -61,60 +66,59 @@ public class NgWebDriver implements WebDriver, WrapsDriver {
 
     }
 
-    public NgWebElement findElement(By arg0) {
-        this.WaitForAngular();
-        NgWebElement tempEle = new NgWebElement(this, this.driver.findElement(arg0));
-        return tempEle;
+    public NgWebElement findElement(By by) {
+        this.waitForAngular();
+        return new NgWebElement(this, this.driver.findElement(by));
     }
 
-    public List<NgWebElement> findNGElements(By arg0) {
-        this.WaitForAngular();
-        List<WebElement> temp = this.driver.findElements(arg0);
+    public List<NgWebElement> findNGElements(By by) {
+        this.waitForAngular();
+        List<WebElement> temp = this.driver.findElements(by);
         // not sure idf this is correct
-        List<NgWebElement> returnElements = new ArrayList<NgWebElement>();
-        for (WebElement currrentEle : temp) {
-            returnElements.add(new NgWebElement(this, currrentEle));
+        final List<NgWebElement> elements = new ArrayList<>();
+        for (final WebElement element : temp) {
+            elements.add(new NgWebElement(this, element));
         }
-        return returnElements;
+        return elements;
     }
 
-    public List<WebElement> findElements(By arg0) {
-        return this.driver.findElements(arg0);
+    public List<WebElement> findElements(By by) {
+        return this.driver.findElements(by);
     }
 
     public void get(String arg0) {
-        this.WaitForAngular();
+        this.waitForAngular();
         this.driver.navigate().to(arg0);
 
     }
 
     public String getCurrentUrl() {
-        this.WaitForAngular();
+        this.waitForAngular();
         return this.driver.getCurrentUrl();
     }
 
     public String getPageSource() {
-        this.WaitForAngular();
+        this.waitForAngular();
         return this.driver.getPageSource();
     }
 
     public String getTitle() {
-        this.WaitForAngular();
+        this.waitForAngular();
         return driver.getTitle();
     }
 
     public String getWindowHandle() {
-        this.WaitForAngular();
+        this.waitForAngular();
         return driver.getWindowHandle();
     }
 
     public Set<String> getWindowHandles() {
-        this.WaitForAngular();
+        this.waitForAngular();
         return driver.getWindowHandles();
     }
 
     public Options manage() {
-        //this.WaitForAngular();
+        //this.waitForAngular();
         return this.driver.manage();
     }
 
@@ -131,14 +135,13 @@ public class NgWebDriver implements WebDriver, WrapsDriver {
         return this.driver.switchTo();
     }
 
-    public void WaitForAngular() {
-        if (!this.IgnoreSynchronization) {
+    public void waitForAngular() {
+        if (!this.ignoresync) {
             iterationCount++;
             this.jsExecutor.executeAsyncScript(
-                ClientSideScripts.WaitForAngular,
+                new WaitForAngular().content(),
                 this.rootElement
             );
         }
     }
-
 }
