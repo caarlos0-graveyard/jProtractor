@@ -1,7 +1,7 @@
 package com.jprotractor.scripts;
 
 /**
- * @author Carlos Alexandro Becker (caarlos0@gmail.com)
+ * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
  */
 public final class FindRepeaterElements implements Script {
     @Override

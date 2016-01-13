@@ -1,5 +1,10 @@
 package com.jprotractor;
 
+/**
+  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
+  * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
+  */
+ 
 import com.jprotractor.scripts.FindAllRepeaterColumns;
 import com.jprotractor.scripts.FindAllRepeaterRows;
 import com.jprotractor.scripts.FindBindings;

@@ -1,5 +1,9 @@
 package com.jprotractor.integration;
 
+/**
+ * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
+ */
+
 import org.apache.commons.lang.exception.ExceptionUtils;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -779,7 +783,5 @@ import com.jprotractor.NgWebElement;
 			List <WebElement>elements = ngDriver.findElements(NgBy.repeaterElement("item in items",5,"item.a"));
 			assertThat(elements.size(), equalTo(0));
 		}
-
-
 	}
 }
