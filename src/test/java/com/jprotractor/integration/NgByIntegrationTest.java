@@ -670,6 +670,7 @@ import com.jprotractor.NgWebElement;
 			ngDriver.navigate().to(getScriptContent(localFile));
 			Thread.sleep(1000);
 			WebElement element = ngDriver.findElement(NgBy.selectedOption("myChoice"));
+			Thread.sleep(500);
 			assertTrue(element.isDisplayed());
 			assertThat(element.getText(),containsString("three"));		
 			System.err.println(element.getText() );
@@ -694,6 +695,7 @@ import com.jprotractor.NgWebElement;
                     option.click();
                 }
             }
+			Thread.sleep(1000);
 			NgWebElement element = ngDriver.findElement(NgBy.selectedOption("myChoice"));
 			assertThat(element.getText(),containsString("two"));		
 			System.err.println(element.getText() );
