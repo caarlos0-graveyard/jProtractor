@@ -6,6 +6,6 @@ package com.jprotractor.scripts;
 public final class FindAllRepeaterRows implements Script {
     @Override
     public String content() {
-        return new Loader("repater").content();
+        return new Loader("repeater").content();
     }
 }
