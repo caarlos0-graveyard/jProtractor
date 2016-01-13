@@ -22,6 +22,8 @@ public final class JavaScriptBy extends By {
     private final transient Script script;
     /**
      * Root element.
+     *
+     * FIXME this should not be like that.
      */
     public WebElement root;
     /**
