@@ -30,7 +30,7 @@ final class Loader {
                 .getClassLoader().getResourceAsStream(this.filename)
         ) {
             if (stream == null) {
-                throw new ScriptLoadException(err, this.filename);
+                throw new ScriptLoadException(this.filename);
             }
             final byte[] bytes = new byte[stream.available()];
             stream.read(bytes);
