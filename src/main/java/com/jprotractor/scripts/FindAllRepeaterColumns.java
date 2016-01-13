@@ -6,6 +6,6 @@ package com.jprotractor.scripts;
 public final class FindAllRepeaterColumns implements Script {
     @Override
     public String content() {
-        return new Loader("repaterColumn").content();
+        return new Loader("repeaterColumn").content();
     }
 }

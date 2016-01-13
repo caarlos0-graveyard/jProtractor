@@ -29,6 +29,9 @@ final class Loader {
             final InputStream stream = Loader.class
                 .getClassLoader().getResourceAsStream(this.filename)
         ) {
+            if (stream == null) {
+                throw new ScriptLoadException(err, this.filename);
+            }
             final byte[] bytes = new byte[stream.available()];
             stream.read(bytes);
             return new String(bytes, "UTF-8");
