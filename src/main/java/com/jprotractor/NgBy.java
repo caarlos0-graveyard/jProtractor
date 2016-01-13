@@ -1,45 +1,52 @@
 package com.jprotractor;
 
+import com.jprotractor.scripts.FindAllRepeaterColumns;
+import com.jprotractor.scripts.FindAllRepeaterRows;
+import com.jprotractor.scripts.FindBindings;
+import com.jprotractor.scripts.FindButtonText;
+import com.jprotractor.scripts.FindModel;
+import com.jprotractor.scripts.FindOptions;
+import com.jprotractor.scripts.FindSelectedOption;
+import com.jprotractor.scripts.PartialButtonText;
 import org.openqa.selenium.By;
-//import com.ostusa.JavaScriptBy;
 
-public class NgBy {
+public final class NgBy {
     private NgBy() {
     }
 
-    public static By binding(String binding) {
-        return new JavaScriptBy(ClientSideScripts.FindBindings, binding);
+    public static By binding(final String binding) {
+        return new JavaScriptBy(new FindBindings(), binding);
     }
 
-    public static By buttonText(String text) {
-        return new JavaScriptBy(ClientSideScripts.FindButtonText, text);
+    public static By buttonText(final String text) {
+        return new JavaScriptBy(new FindButtonText(), text);
     }
 
-    public static By input(String input) {
-        return new JavaScriptBy(ClientSideScripts.FindModel, input);
+    public static By input(final String input) {
+        return new JavaScriptBy(new FindModel(), input);
     }
 
-    public static By model(String model) {
-        return new JavaScriptBy(ClientSideScripts.FindModel, model);
+    public static By model(final String model) {
+        return new JavaScriptBy(new FindModel(), model);
     }
 
-    public static By partialButtonText(String text) {
-        return new JavaScriptBy(ClientSideScripts.PartialButtonText, text);
+    public static By partialButtonText(final String text) {
+        return new JavaScriptBy(new PartialButtonText(), text);
     }
 
-    public static By repeater(String repeat) {
-        return new JavaScriptBy(ClientSideScripts.FindAllRepeaterRows, repeat);
+    public static By repeater(final String repeat) {
+        return new JavaScriptBy(new FindAllRepeaterRows(), repeat);
     }
 
-    public static By repeaterColumn(String repeat, String binding) {
-        return new JavaScriptBy(ClientSideScripts.FindRepeaterColumn, repeat, binding);
+    public static By repeaterColumn(final String repeat, String binding) {
+        return new JavaScriptBy(new FindAllRepeaterColumns(), repeat, binding);
     }
 
-    public static By options(String options) {
-        return new JavaScriptBy(ClientSideScripts.FindOptions, options);
+    public static By options(final String options) {
+        return new JavaScriptBy(new FindOptions(), options);
     }
 
-    public static By selectedOption(String model) {
-        return new JavaScriptBy(ClientSideScripts.FindSelectedOption, model);
+    public static By selectedOption(final String model) {
+        return new JavaScriptBy(new FindSelectedOption(), model);
     }
 }

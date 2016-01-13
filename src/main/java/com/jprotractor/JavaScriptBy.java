@@ -2,6 +2,7 @@ package com.jprotractor;
 
 import com.jprotractor.scripts.Script;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -10,6 +11,10 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.internal.WrapsDriver;
 
+/**
+ * Javascript WebElement searcher.
+ * @author Carlos Alexandro Becker (caarlos0@gmail.com)
+ */
 public final class JavaScriptBy extends By {
     /**
      * Script to use.
@@ -18,17 +23,27 @@ public final class JavaScriptBy extends By {
     /**
      * Root element.
      */
-    private final transient WebElement root;
+    public WebElement root;
+    /**
+     * Script arguments.
+     */
+    private final transient Object[] args;
 
     /**
      * Ctor.
      * @param scrpt Script to use.
-     * @param elem Root WebElement.
+//     * @param elem Root WebElement.
+     * @param jsargs Script args.
      */
-    public JavaScriptBy(final Script scrpt, final WebElement elem) {
+    public JavaScriptBy(
+//        final WebElement elem,
+        final Script scrpt,
+        final Object... jsargs
+    ) {
         super();
         this.script = scrpt;
-        this.root = elem;
+//        this.root = elem;
+        this.args = Arrays.copyOf(jsargs, jsargs.length);
     }
 
     @Override
@@ -42,7 +57,7 @@ public final class JavaScriptBy extends By {
     }
 
     @Override
-    public List<WebElement> findElements(final SearchContext context) throws WebDriverException {
+    public List<WebElement> findElements(final SearchContext context) {
         final Object[] scriptargs = new Object[this.args.length + 1];
         scriptargs[0] = this.root;
         System.arraycopy(this.args, 0, scriptargs, 1, this.args.length);
