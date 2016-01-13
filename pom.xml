@@ -95,21 +95,21 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>com.qulice</groupId>
-        <artifactId>qulice-maven-plugin</artifactId>
-        <version>0.15.1</version>
-        <configuration>
-          <license>file:${basedir}/LICENSE.md</license>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>com.qulice</groupId>-->
+        <!--<artifactId>qulice-maven-plugin</artifactId>-->
+        <!--<version>0.15.1</version>-->
+        <!--<configuration>-->
+          <!--<license>file:${basedir}/LICENSE.md</license>-->
+        <!--</configuration>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<goals>-->
+              <!--<goal>check</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
+        <!--</executions>-->
+      <!--</plugin>-->
     </plugins>
   </build>
 </project>
