@@ -6,9 +6,10 @@ import com.jprotractor.scripts.FindBindings;
 import com.jprotractor.scripts.FindButtonText;
 import com.jprotractor.scripts.FindModel;
 import com.jprotractor.scripts.FindOptions;
+import com.jprotractor.scripts.FindPartialButtonText;
 import com.jprotractor.scripts.FindRepeaterElements;
 import com.jprotractor.scripts.FindSelectedOption;
-import com.jprotractor.scripts.PartialButtonText;
+
 import org.openqa.selenium.By;
 
 public final class NgBy {
@@ -32,7 +33,7 @@ public final class NgBy {
     }
 
     public static By partialButtonText(final String text) {
-        return new JavaScriptBy(new PartialButtonText(), text);
+        return new JavaScriptBy(new FindPartialButtonText(), text);
     }
 
     public static By repeater(final String repeat) {
@@ -43,7 +44,7 @@ public final class NgBy {
         return new JavaScriptBy(new FindAllRepeaterColumns(), repeat, binding);
     }
 
-	public static By repeaterElement(String repeat, Integer index, String binding){
+	public static By repeaterElement(final String repeat, Integer index, String binding){
 		return new JavaScriptBy(new FindRepeaterElements(), repeat, index, binding);
 	}
 	

@@ -3,7 +3,7 @@ package com.jprotractor.scripts;
 /**
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
  */
-public final class PartialButtonText implements Script {
+public final class FindPartialButtonText implements Script {
     @Override
     public String content() {
         return new Loader("partialButtonText").content();
