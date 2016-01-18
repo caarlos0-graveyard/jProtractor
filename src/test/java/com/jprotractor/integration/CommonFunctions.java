@@ -68,10 +68,9 @@ public class CommonFunctions {
 		return isCIBuild;
 	}
 
-	protected static String getScriptContent(String filename) {
+	protected static String getPageContent(String pagename) {
 		try {
-			URI uri = CommonFunctions.class.getClassLoader().getResource(filename).toURI();
-			//	URI uri = this.getClass().getClassLoader().getResource(filename).toURI();
+			URI uri = CommonFunctions.class.getClassLoader().getResource(pagename).toURI();			
 			System.err.println("Testing: " + uri.toString());
 			return uri.toString();
 		} catch (URISyntaxException e) { // NOTE: multi-catch statement is not supported in -source 1.6
