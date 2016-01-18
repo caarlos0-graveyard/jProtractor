@@ -59,6 +59,11 @@ import com.jprotractor.NgBy;
 import com.jprotractor.NgWebDriver;
 import com.jprotractor.NgWebElement;
 
+/**
+ * Integration tests of Calculator http://juliemr.github.io/protractor-demo/
+ * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
+ */
+
 public class NgCalculatorTest {
 	private static String fullStackTrace;
 	private static NgWebDriver ngDriver;

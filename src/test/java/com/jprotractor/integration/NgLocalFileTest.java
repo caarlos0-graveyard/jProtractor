@@ -59,6 +59,11 @@ import com.jprotractor.NgBy;
 import com.jprotractor.NgWebDriver;
 import com.jprotractor.NgWebElement;
 
+/**
+ * Local file Integration tests
+ * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
+ */
+
 public class NgLocalFileTest {
 	private static NgWebDriver ngDriver;
 	private static WebDriver seleniumDriver;

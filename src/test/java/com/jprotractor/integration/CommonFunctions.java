@@ -30,6 +30,11 @@ import com.jprotractor.NgBy;
 import com.jprotractor.NgWebDriver;
 import com.jprotractor.NgWebElement;
 
+/**
+ * Common functions for integration testing
+ * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
+ */
+
 public class CommonFunctions {
 	private static WebDriver seleniumDriver;
 	static WebDriverWait wait;
