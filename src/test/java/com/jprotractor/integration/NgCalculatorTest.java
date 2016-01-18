@@ -129,14 +129,6 @@ public class NgCalculatorTest {
 		CommonFunctions.highlight(element, highlightInterval);
 	}
 
-	private static void highlight(NgWebElement element) throws InterruptedException {
-		highlight(element,  100);
-	}
-
-	private static void highlight(NgWebElement element, long highlightInterval ) throws InterruptedException {
-		CommonFunctions.highlight(element, highlightInterval);
-	}
-	
 }
 
 

@@ -9,8 +9,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.io.File;
 import java.io.IOException;
-// import java.nio.file.Files;
-// import java.nio.file.Paths;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -90,10 +88,6 @@ public class CommonFunctions {
 		executeScript("arguments[0].style.border='3px solid yellow'", element);
 		Thread.sleep(highlightInterval);
 		executeScript("arguments[0].style.border=''", element);
-	}
-
-	public static void highlight(NgWebElement element, long highlightInterval) throws InterruptedException {
-		highlight(element.getWrappedElement(), highlightInterval);
 	}
 
 	public static Object executeScript(String script,Object ... args){
