@@ -64,6 +64,11 @@ import com.jprotractor.NgBy;
 import com.jprotractor.NgWebDriver;
 import com.jprotractor.NgWebElement;
 
+/**
+ * Integration tests of XYZ Bank page http://www.way2automation.com/angularjs-protractor/banking
+ * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
+ */
+
 public class NgWay2AutomationIntegrationTest  {
 	private static String fullStackTrace;
 	private static NgWebDriver ngDriver;
