@@ -14,6 +14,7 @@ import org.openqa.selenium.internal.WrapsDriver;
 /**
  * Javascript WebElement searcher.
  * @author Carlos Alexandro Becker (caarlos0@gmail.com)
+ * @author Serguei Kouzmine (kouzmine_serguei@yahoo.com)
  */
 public final class JavaScriptBy extends By {
     /**
@@ -74,7 +75,7 @@ public final class JavaScriptBy extends By {
         List<WebElement> elements = (List<WebElement>) this.executor(context)
             .executeScript(this.script.content(), jsargs);
         if (elements == null) {
-            elements = new ArrayList<>(0);
+			elements = new ArrayList<WebElement>();
         }
         return elements;
     }

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import java.util.regex.Matcher;
@@ -139,6 +140,56 @@ public class NgLocalFileTest {
 		System.err.println("Mexico = " + cnt.toString() );
 	}		
 
+	/*
+	@Test
+	public void testFindSelectedtOption() throws Exception {
+		if (!isCIBuild) {
+			return;
+		}
+		localFile = "bind_select_option_data_from_array_example.htm";
+		ngDriver.navigate().to(getPageContent(localFile));
+		Thread.sleep(500);
+		// Some versions of PhantomJS have trouble finding the selectedOption in
+		// <option ng-repeat="option in options" value="3" ng-selected="option.value == myChoice" class="ng-scope ng-binding" selected="selected">three</option>
+		WebElement element = ngDriver.findElement(NgBy.selectedOption("myChoice"));
+		Thread.sleep(500);
+		assertThat(element, notNullValue());
+		assertTrue(element.isDisplayed());
+		assertThat(element.getText(),containsString("three"));		
+		System.err.println(element.getText() );
+	}
+	*/
+
+	/*		
+	@Test
+	public void testChangeSelectedtOption() throws Exception {
+		if (!isCIBuild) {
+			return;
+		}
+		localFile = "bind_select_option_data_from_array_example.htm";
+		ngDriver.navigate().to(getPageContent(localFile));
+		Thread.sleep(500);
+		Iterator<WebElement> options = ngDriver.findElements(NgBy.repeater("option in options")).iterator();
+		while (options.hasNext() ) {
+			WebElement option = (WebElement)  options.next();
+			System.err.println("option = " + option.getText() );
+			if (option.getText().isEmpty()){
+				break;
+			}
+			if (option.getText().equalsIgnoreCase("two") ){
+                    option.click();
+                }
+            }
+		Thread.sleep(500);
+		// Some versions of PhantomJS have trouble finding the selectedOption in
+		// <option ng-repeat="option in options" value="3" ng-selected="option.value == myChoice" class="ng-scope ng-binding" selected="selected">three</option>
+		NgWebElement element = ngDriver.findElement(NgBy.selectedOption("myChoice"));
+		assertThat(element, notNullValue());
+		System.err.println("selectedOption = " + element.getText() );
+		assertThat(element.getText(),containsString("two"));		
+	}
+	*/
+
 	@Test
 	public void testFindElementByRepeaterWithBeginEnd() throws Exception {
 		if (!isCIBuild) {
@@ -202,7 +253,7 @@ public class NgLocalFileTest {
 	}
 
 	@Test
-	public void testfindRepeaterElement() throws Exception {
+	public void testFindRepeaterElement() throws Exception {
 		if (!isCIBuild) {
 			return;
 		}			
@@ -216,6 +267,111 @@ public class NgLocalFileTest {
 		assertThat(elements.size(), equalTo(0));
 	}
 
+    @Test
+	public void testDropDownWatch() throws Exception {
+		if (!isCIBuild) {
+			return;
+		}
+
+		localFile = "ng_dropdown_watch.htm";
+		ngDriver.navigate().to(getPageContent(localFile));
+		Thread.sleep(500);
+
+		String optionsCountry = "country for country in countries";
+		List <WebElement>elementsCountries = ngDriver.findElements(NgBy.options(optionsCountry));
+		assertThat(elementsCountries.size(), equalTo(3));
+
+		Iterator<WebElement> iteratorCountries = elementsCountries.iterator();
+		while (iteratorCountries.hasNext()) {
+			WebElement country = (WebElement) iteratorCountries.next();
+			if (country.getAttribute("value").isEmpty()){
+				continue;
+			}
+			assertTrue(country.getAttribute("value").matches("^\\d+$"));
+			assertTrue(country.getText().matches("(?i:China|United States)"));
+			System.err.println("country = " + country.getText() );
+		}
+		String optionsState = "state for state in states";
+		WebElement elementState = ngDriver.findElement(NgBy.options(optionsState));
+		assertTrue(!elementState.isEnabled());
+
+		Select selectCountries = new Select(ngDriver.findElement(NgBy.model("country")));
+		selectCountries.selectByVisibleText("china");
+		WebElement selectedOptionCountry = ngDriver.findElement(NgBy.selectedOption(optionsCountry));
+		try{
+			assertThat(selectedOptionCountry, notNullValue());
+		} catch (AssertionError e) {
+		}
+		assertTrue(elementState.isEnabled());
+		
+		List <WebElement>elementsStates = ngDriver.findElements(NgBy.options(optionsState));
+		assertThat(elementsStates.size(), equalTo(3));
+		Iterator<WebElement> iteratorStates = elementsStates.iterator();
+		while (iteratorStates.hasNext()) {
+			WebElement state = (WebElement) iteratorStates.next();
+			if (state.getAttribute("value").isEmpty()){
+				continue;
+			}
+			assertTrue(state.getAttribute("value").matches("^\\d+$"));
+			assertTrue(state.getText().matches("(?i:BeiJing|ShangHai)"));
+			System.err.println("state = " + state.getText());
+		}
+
+	}
+
+    @Test
+	public void testDropDown() throws Exception {
+		if (!isCIBuild) {
+			return;
+		}
+		
+		localFile = "ng_dropdown.htm";
+		ngDriver.navigate().to(getPageContent(localFile));
+		Thread.sleep(500);
+		
+		String optionsCountry = "country for (country, states) in countries";
+		List <WebElement>elementsCountries = ngDriver.findElements(NgBy.options(optionsCountry));
+		assertThat(elementsCountries.size(), equalTo(4));
+		Iterator<WebElement> iteratorCountries = elementsCountries.iterator();
+		while (iteratorCountries.hasNext()) {
+			WebElement country = (WebElement) iteratorCountries.next();
+			if (country.getAttribute("value").isEmpty()){
+				continue;
+			}
+			assertTrue(country.getAttribute("value").matches("(?i:India|Australia|Usa)"));
+			System.err.println("country = " + country.getAttribute("value") );
+		}
+
+		String optionsState = "state for (state,city) in states";
+		WebElement elementState = ngDriver.findElement(NgBy.options(optionsState));
+		assertTrue(!elementState.isEnabled());
+
+		WebElement element = ngDriver.findElement(NgBy.options(optionsCountry));
+		assertThat(element.getText().toLowerCase(Locale.getDefault()),containsString("select"));
+		assertTrue(element.isEnabled());
+
+		Select selectCountries = new Select(ngDriver.findElement(NgBy.model("states")));
+		selectCountries.selectByValue("Australia");
+		WebElement selectedOptionCountry = ngDriver.findElement(NgBy.selectedOption(optionsCountry));
+		try{
+			assertThat(selectedOptionCountry, notNullValue());
+		} catch (AssertionError e) {
+		}
+		elementState = ngDriver.findElement(NgBy.options(optionsState));
+		assertTrue(elementState.isEnabled());
+		List <WebElement>elementsStates = ngDriver.findElements(NgBy.options(optionsState));
+		assertThat(elementsStates.size(), equalTo(3));
+		Iterator<WebElement> iteratorStates = elementsStates.iterator();
+		while (iteratorStates.hasNext()) {
+			WebElement state = (WebElement) iteratorStates.next();
+			if (state.getAttribute("value").isEmpty()){
+				continue;
+			}
+			assertTrue(state.getAttribute("value").matches("(?i:New South Wales|Victoria)"));
+			System.err.println("state = " + state.getAttribute("value") );
+		}
+	}
+
 	@AfterClass
 	public static void teardown() {
 		ngDriver.close();
@@ -223,7 +379,7 @@ public class NgLocalFileTest {
 	}
 
 	private static String getPageContent(String pagename) {
-		return CommonFunctions.	getPageContent( pagename) ;
+		return CommonFunctions.getPageContent( pagename) ;
 	}
 
 	private static void highlight(WebElement element) throws InterruptedException {
