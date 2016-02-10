@@ -65,7 +65,7 @@ Testing with existing Java projects
 
 ```
   * Add reference to the project `pom.xml`:
-
+```
 &lt;properties&gt;
   &lt;jprotractor.version&gt;1.0-SNAPSHOT&lt;/jprotractor.version&gt;
   ...
@@ -78,8 +78,7 @@ Testing with existing Java projects
       &lt;version&gt;${jprotractor.version}&lt;/version&gt;
       &lt;scope&gt;system&lt;/scope&gt;
       &lt;systemPath&gt;${project.basedir}/src/main/resources/jprotractor-${jprotractor.version}.jar&lt;/systemPath&gt;
-&lt;/dependency&gt;
-					```
+&lt;/dependency&gt;					```
 
 ```
   * Add reference to the code:
