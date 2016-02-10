@@ -27,7 +27,6 @@ testForAngular.js
 waitForAngular.js
 ```
 
-```
 
 Building
 --------
