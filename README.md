@@ -1,6 +1,6 @@
 
 Info
-----
+====
 
 Goal is to close the gap between [jProtractor locator snippets](https://github.com/sergueik/jProtractor/tree/master/src/main/resources) and [genuine protractor ones](https://github.com/angular/protractor/blob/master/lib/clientsidescripts.js)
 
@@ -26,8 +26,10 @@ waitForAngular.js
 
 
 Building
---------
+========
 Windows (jdk1.7.0_65, 32 bit)
+-----------------------------
+The following commands compile the project in console.
 ```
 set M2=c:\java\apache-maven-3.2.1\bin
 set M2_HOME=c:\java\apache-maven-3.2.1
@@ -42,15 +44,17 @@ set TRAVIS=true
 mvn clean package
 ```
 Linux
+-----
 ```
 export TRAVIS=true
 mvn clean package
 ```
-Testing with existing Java projects
------------------------------------
+
+Using with existing Java projects
+=================================
 
 Maven
-=====
+-----
 
   * Copy `target\jprotractor-1.0-SNAPSHOT.jar` to your project `src/main/resources`:
 
@@ -64,7 +68,7 @@ Maven
             +---resources
 
 ```
-  * Add reference to the project `pom.xml`:
+  * Add reference to the project `pom.xml` (a sample project is checked in) 
 ```
 <properties>
     <jprotractor.version>1.0-SNAPSHOT</jprotractor.version>
@@ -90,10 +94,10 @@ import com.jprotractor.NgWebElement;
 ```
 
 Ant
-===
+---
 
 * Copy the `target\jprotractor-1.0-SNAPSHOT.jar`  in the same location oher dependency jars, e.g. `c:\java\selenium`,
-* Use the bolierplate `build.xml` or merge with your existing build files:
+* Use the bolierplate `build.xml` (a sample project is checked in) or merge with your existing build file(s):
 ```
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="example" basedir=".">
@@ -135,8 +139,8 @@ import com.jprotractor.NgWebElement;
 
 ```
 
-Tests
------
+Example Test
+============
 
 For desktop browser testing, run a Selenium node and Selenium hub on port 4444 and 
 ```
@@ -188,21 +192,11 @@ public static void setup() throws IOException {
 	ngDriver = new NgWebDriver(seleniumDriver);
 }
 ```
-For testing your code with  jprotractor.jar, add it to `src/main/resources`:
-add 
-```
-<dependency>
-  <groupId>com.jprotractor</groupId>
-  <artifactId>jprotractor</artifactId>
-  <version>${jprotractor.version}</version>
-  <scope>system</scope>
-  <systemPath>${project.basedir}/src/main/resources/jprotractor-${jprotractor.version}.jar</systemPath>
-</dependency>
-```
+
 
 Note
 ----
-PhantomJs allows loading Angular samples via `file://` content:
+PhantomJs allows loading Angular samples from `file://` content:
 
 ```
     seleniumDriver = new PhantomJSDriver();
@@ -219,11 +213,11 @@ PhantomJs allows loading Angular samples via `file://` content:
     assertThat(element, notNullValue());
 
 ```
-Tests involving `NgBy.selectedOption()` currently fail under [travis](https://travis-ci.org/) build.
+Certain tests ( e.g. involving `NgBy.selectedOption()` ) currently fail under [travis](https://travis-ci.org/) CI build.
 
 
 Related Projects 
-----------------
+================
   - [Protractor-jvm](https://github.com/F1tZ81/Protractor-jvm)
   - [ngWebDriver](https://github.com/paul-hammant/ngWebDriver)
   - [angular/protractor](https://github.com/angular/protractor) 
