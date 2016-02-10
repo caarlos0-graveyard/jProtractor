@@ -66,19 +66,19 @@ Testing with existing Java projects
 ```
   * Add reference to the project `pom.xml`:
 
-<properties>
-  <jprotractor.version>1.0-SNAPSHOT</jprotractor.version>
+&lt;properties&gt;
+  &lt;jprotractor.version&gt;1.0-SNAPSHOT&lt;/jprotractor.version&gt;
   ...
-</properties>
+&lt;/properties&gt;
 ```
 ```
-<dependency>
-  <groupId>com.jprotractor</groupId>
-    <artifactId>jprotractor</artifactId>
-      <version>${jprotractor.version}</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/src/main/resources/jprotractor-${jprotractor.version}.jar</systemPath>
-</dependency>
+&lt;dependency&gt;
+  &lt;groupId&gt;com.jprotractor&lt;/groupId&gt;
+    &lt;artifactId&gt;jprotractor&lt;/artifactId&gt;
+      &lt;version&gt;${jprotractor.version}&lt;/version&gt;
+      &lt;scope&gt;system&lt;/scope&gt;
+      &lt;systemPath&gt;${project.basedir}/src/main/resources/jprotractor-${jprotractor.version}.jar&lt;/systemPath&gt;
+&lt;/dependency&gt;
 					```
 
 ```
