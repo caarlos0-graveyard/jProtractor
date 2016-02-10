@@ -1,14 +1,11 @@
-Note
-----
 
-This github project is the 'development branch' of the collaborated project 
-[jProtratractor](https://github.com/caarlos0/jProtractor)
 Info
 ----
 
-
 Goal is to close the gap between [jProtractor locator snippets](https://github.com/sergueik/jProtractor/tree/master/src/main/resources) and [genuine protractor ones](https://github.com/angular/protractor/blob/master/lib/clientsidescripts.js)
-Currently supported methods:
+
+
+Currently supported Antular Proractor methods:
 ```
 binding.js
 buttonText.js
@@ -95,8 +92,8 @@ import com.jprotractor.NgWebElement;
 Ant
 ===
 
-* Copy the `` in the same location oher dependency jars, e.g. `c:\java\selenium`,
-* Use the bolierplate `build.xml`:
+* Copy the `target\jprotractor-1.0-SNAPSHOT.jar`  in the same location oher dependency jars, e.g. `c:\java\selenium`,
+* Use the bolierplate `build.xml` or merge with your existing build files:
 ```
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="example" basedir=".">
