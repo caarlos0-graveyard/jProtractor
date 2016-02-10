@@ -50,7 +50,10 @@ export TRAVIS=true
 mvn clean package
 ```
 Testing with existing Java projects
--------
+-----------------------------------
+
+Maven
+=====
 
   * Copy `target\jprotractor-1.0-SNAPSHOT.jar` to your project `src/main/resources`:
 
@@ -66,20 +69,20 @@ Testing with existing Java projects
 ```
   * Add reference to the project `pom.xml`:
 ```
-&lt;properties&gt;
-  &lt;jprotractor.version&gt;1.0-SNAPSHOT&lt;/jprotractor.version&gt;
-  ...
-&lt;/properties&gt;
+<properties>
+    <jprotractor.version>1.0-SNAPSHOT</jprotractor.version>
+</properties>
 ```
 ```
-&lt;dependency&gt;
-  &lt;groupId&gt;com.jprotractor&lt;/groupId&gt;
-    &lt;artifactId&gt;jprotractor&lt;/artifactId&gt;
-      &lt;version&gt;${jprotractor.version}&lt;/version&gt;
-      &lt;scope&gt;system&lt;/scope&gt;
-      &lt;systemPath&gt;${project.basedir}/src/main/resources/jprotractor-${jprotractor.version}.jar&lt;/systemPath&gt;
-&lt;/dependency&gt;					```
-
+<dependencies>
+<dependency>
+     <groupId>com.jprotractor</groupId>
+     <artifactId>jprotractor</artifactId>
+     <version>${jprotractor.version}</version>
+     <scope>system</scope>
+     <systemPath>${project.basedir}/src/main/resources/jprotractor-${jprotractor.version}.jar</systemPath>
+</dependency>
+</dependencies>
 ```
   * Add reference to the code:
 ```
@@ -87,6 +90,52 @@ import com.jprotractor.NgBy;
 import com.jprotractor.NgWebDriver;
 import com.jprotractor.NgWebElement;
   
+```
+
+Ant
+===
+
+* Copy the `` in the same location oher dependency jars, e.g. `c:\java\selenium`,
+* Use the bolierplate `build.xml`:
+```
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project name="example" basedir=".">
+  <property name="build.dir" value="${basedir}/build"/>
+  <property name="selenium.jars" value="c:/java/selenium"/>
+  <property name="src.dir" value="${basedir}/src"/>
+  <target name="loadTestNG" depends="setClassPath">
+    <taskdef resource="testngtasks" classpath="${test.classpath}"/>
+  </target>
+  <target name="setClassPath">
+    <path id="classpath_jars">
+      <pathelement path="${basedir}/"/>
+      <fileset dir="${selenium.jars}" includes="*.jar"/>
+    </path>
+    <pathconvert pathsep=";" property="test.classpath" refid="classpath_jars"/>
+  </target>
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  </target>
+  <target name="compile" depends="clean,setClassPath,loadTestNG">
+    <mkdir dir="${build.dir}"/>
+    <javac destdir="${build.dir}" srcdir="${src.dir}">
+      <classpath refid="classpath_jars"/>
+    </javac>
+  </target>
+  <target name="test" depends="compile">
+    <testng classpath="${test.classpath};${build.dir}">
+      <xmlfileset dir="${basedir}" includes="testng.xml"/>
+    </testng>
+  </target>
+</project>
+
+```
+* Add reference to the code:
+```
+import com.jprotractor.NgBy;
+import com.jprotractor.NgWebDriver;
+import com.jprotractor.NgWebElement;
+
 ```
 
 Tests
