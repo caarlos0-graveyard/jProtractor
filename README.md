@@ -29,6 +29,68 @@ waitForAngular.js
 
 ```
 
+Building
+--------
+Windows (jdk1.7.0_65, 32 bit)
+```
+set M2=c:\java\apache-maven-3.2.1\bin
+set M2_HOME=c:\java\apache-maven-3.2.1
+set MAVEN_OPTS=-Xms256m -Xmx512m
+set JAVA_HOME=c:\java\jdk1.7.0_65
+set JAVA_VERSION=1.7.0_65
+PATH=%JAVA_HOME%\bin;%PATH%;%M2%
+REM
+REM move %USERPROFILE%\.M2 %USERPROFILE%\.M2.MOVED
+REM rd /s/q %USERPROFILE%\.M2
+set TRAVIS=true
+mvn clean package
+```
+Linux
+```
+export TRAVIS=true
+mvn clean package
+```
+Testing with existing Java projects
+-------
+
+  * Copy `target\jprotractor-1.0-SNAPSHOT.jar` to your project `src/main/resources`:
+
+```
++---src
+    +---main
+            +---java
+            |   +---com
+            |       +---mycompany
+            |           +---app
+            +---resources
+
+```
+  * Add reference to the project `pom.xml`:
+
+<properties>
+  <jprotractor.version>1.0-SNAPSHOT</jprotractor.version>
+  ...
+</properties>
+```
+```
+<dependency>
+  <groupId>com.jprotractor</groupId>
+    <artifactId>jprotractor</artifactId>
+      <version>${jprotractor.version}</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/src/main/resources/jprotractor-${jprotractor.version}.jar</systemPath>
+</dependency>
+					```
+
+```
+  * Add reference to the code:
+```
+import com.jprotractor.NgBy;
+import com.jprotractor.NgWebDriver;
+import com.jprotractor.NgWebElement;
+  
+```
+
 Tests
 -----
 
