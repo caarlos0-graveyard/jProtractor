@@ -144,73 +144,86 @@ Example Test
 
 For desktop browser testing, run a Selenium node and Selenium hub on port 4444 and 
 ```
-@BeforeClass
-public static void setup() throws IOException {
-    DesiredCapabilities capabilities =   new DesiredCapabilities("firefox", "", Platform.ANY);
-    FirefoxProfile profile = new ProfilesIni().getProfile("default");
-    capabilities.setCapability("firefox_profile", profile);
-    seleniumDriver = new RemoteWebDriver(new URL("http://127.0.0.1:4444/wd/hub"), capabilities);
-    ngDriver = new NgWebDriver(seleniumDriver);
-}
+  @BeforeClass
+  public static void setup() throws IOException {
+      DesiredCapabilities capabilities =   new DesiredCapabilities("firefox", "", Platform.ANY);
+      FirefoxProfile profile = new ProfilesIni().getProfile("default");
+      capabilities.setCapability("firefox_profile", profile);
+      seleniumDriver = new RemoteWebDriver(new URL("http://127.0.0.1:4444/wd/hub"), capabilities);
+      ngDriver = new NgWebDriver(seleniumDriver);
+  }
 
-@Before
-public void beforeEach() {    
-	String baseUrl = "http://www.way2automation.com/angularjs-protractor/banking";    
-	ngDriver.navigate().to(baseUrl);
-}
-@Test
-public void testCustomerLogin() throws Exception {
-	NgWebElement element = ngDriver.findElement(NgBy.buttonText("Customer Login"));
-	highlight(element, 100);
-	element.click();
-	element = ngDriver.findElement(NgBy.input("custId"));
-	assertThat(element.getAttribute("id"), equalTo("userSelect"));
-	Enumeration<WebElement> elements = Collections.enumeration(ngDriver.findElements(NgBy.repeater("cust in Customers")));
+  @Before
+  public void beforeEach() {
+	  String baseUrl = "http://www.way2automation.com/angularjs-protractor/banking";
+	  ngDriver.navigate().to(baseUrl);
+  }
 
-	while (elements.hasMoreElements()){
-    WebElement next_element = elements.nextElement();
-    if (next_element.getText().indexOf("Harry Potter") >= 0 ){
-    	System.err.println(next_element.getText());
-    	next_element.click();
-    }
-	}
-	NgWebElement login_element = ngDriver.findElement(NgBy.buttonText("Login"));
-	assertTrue(login_element.isEnabled());	
-	login_element.click();    	
-	assertThat(ngDriver.findElement(NgBy.binding("user")).getText(),containsString("Harry"));
+  @Test
+  public void testCustomerLogin() throws Exception {
+	  NgWebElement element = ngDriver.findElement(NgBy.buttonText("Customer Login"));
+	  highlight(element, 100);
+	  element.click();
+	  element = ngDriver.findElement(NgBy.input("custId"));
+	  assertThat(element.getAttribute("id"), equalTo("userSelect"));
+	  Enumeration<WebElement> elements = Collections.enumeration(ngDriver.findElements(NgBy.repeater("cust in Customers")));
+
+	  while (elements.hasMoreElements()){
+      WebElement next_element = elements.nextElement();
+      if (next_element.getText().indexOf("Harry Potter") >= 0 ){
+      	System.err.println(next_element.getText());
+      	next_element.click();
+      }
+	  }
+	  NgWebElement login_element = ngDriver.findElement(NgBy.buttonText("Login"));
+	  assertTrue(login_element.isEnabled());	
+	  login_element.click();
+	  assertThat(ngDriver.findElement(NgBy.binding("user")).getText(),containsString("Harry"));
 	
-	NgWebElement account_number_element = ngDriver.findElement(NgBy.binding("accountNo"));
-	assertThat(account_number_element, notNullValue());
-	assertTrue(account_number_element.getText().matches("^\\d+$"));
-}
+	  NgWebElement account_number_element = ngDriver.findElement(NgBy.binding("accountNo"));
+	  assertThat(account_number_element, notNullValue());
+	  assertTrue(account_number_element.getText().matches("^\\d+$"));
+  }
 ```
 for CI build replace the Setup () with
 ```
-@BeforeClass
-public static void setup() throws IOException {
-	seleniumDriver = new PhantomJSDriver();
-	ngDriver = new NgWebDriver(seleniumDriver);
-}
+  @BeforeClass
+  public static void setup() throws IOException {
+	  seleniumDriver = new PhantomJSDriver();
+	  ngDriver = new NgWebDriver(seleniumDriver);
+  }
 ```
 
 
 Note
 ----
-PhantomJs allows loading Angular samples from `file://` content:
+PhantomJs allows loading Angular samples from `file://` content, you need to allow some additional options if the test page loads external content:
 
 ```
-    seleniumDriver = new PhantomJSDriver();
-    seleniumDriver.manage().window().setSize(new Dimension(width , height ));
-    seleniumDriver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS).implicitlyWait(implicitWait, TimeUnit.SECONDS).setScriptTimeout(10, TimeUnit.SECONDS);
-    wait = new WebDriverWait(seleniumDriver, flexibleWait );
-    wait.pollingEvery(pollingInterval,TimeUnit.MILLISECONDS);
-    actions = new Actions(seleniumDriver);    
-    ngDriver = new NgWebDriver(seleniumDriver);
-    localFile = "local_file.htm";
-    URI uri = NgByIntegrationTest.class.getClassLoader().getResource(localFile).toURI();
-    ngDriver.navigate().to(uri);
-    WebElement element = ngDriver.findElement(NgBy.repeater("item in items"));
-    assertThat(element, notNullValue());
+  DesiredCapabilities capabilities = new DesiredCapabilities("phantomjs", "", Platform.ANY);
+  capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, new String[] {
+    "--web-security=false",
+    "--ssl-protocol=any",
+    "--ignore-ssl-errors=true",
+    "--local-to-remote-url-access=true", // prevent local file test XMLHttpRequest Exception 101
+    "--webdriver-loglevel=INFO" // set to DEBUG for a really verbose console output
+  });
+  seleniumDriver = new PhantomJSDriver(capabilities);
+
+  seleniumDriver.manage().window().setSize(new Dimension(width , height ));
+  seleniumDriver.manage().timeouts()
+    .pageLoadTimeout(50, TimeUnit.SECONDS)
+    .implicitlyWait(implicitWait, TimeUnit.SECONDS)
+    .setScriptTimeout(10, TimeUnit.SECONDS);
+  wait = new WebDriverWait(seleniumDriver, flexibleWait );
+  wait.pollingEvery(pollingInterval,TimeUnit.MILLISECONDS);
+  actions = new Actions(seleniumDriver);
+  ngDriver = new NgWebDriver(seleniumDriver);
+  localFile = "local_file.htm";
+  URI uri = NgByIntegrationTest.class.getClassLoader().getResource(localFile).toURI();
+  ngDriver.navigate().to(uri);
+  WebElement element = ngDriver.findElement(NgBy.repeater("item in items"));
+  assertThat(element, notNullValue());
 
 ```
 Certain tests ( e.g. involving `NgBy.selectedOption()` ) currently fail under [travis](https://travis-ci.org/) CI build.
