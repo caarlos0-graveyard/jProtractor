@@ -8,9 +8,11 @@ import java.io.IOException;
 import static java.lang.Boolean.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Formatter;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,9 +49,12 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.SearchContext;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -75,7 +80,7 @@ public class NgLocalFileTest {
   static int width = 600;
   static int height = 400;
   // set to true for Desktop, false for headless browser testing
-  static boolean isCIBuild =  false;
+  static boolean isCIBuild = false;
   public static String localFile;
   static StringBuilder sb;
   static Formatter formatter;
@@ -95,7 +100,133 @@ public class NgLocalFileTest {
     ngDriver = new NgWebDriver(seleniumDriver);
   }
 
-  // @Ignore
+	// @Ignore
+  @Test
+  public void testDatePickerDirectSelect() throws Exception {
+    getPageContent("ng_datepicker.htm");
+    // can not test official page -  it is not an Angular app.
+    // http://dalelotts.github.io/angular-bootstrap-datetimepicker/
+    // test aborted with exception
+    // Caused by: org.openqa.selenium.WebDriverException: [ng:test] no injector found for element argument to getTestability
+    WebElement ng_result = ngDriver.findElement(NgBy.model("data.inputOnTimeSet"));
+    assertThat(ng_result, notNullValue());
+    assertTrue(ng_result.getAttribute("type").matches("text"));
+    ng_result.clear();
+    NgWebElement ng_calendar = ngDriver.findElement(By.cssSelector(".input-group-addon"));
+    assertThat(ng_calendar, notNullValue());
+    highlight(ng_calendar);
+    actions.moveToElement(ng_calendar.getWrappedElement()).click().build().perform();
+    // need a little more room
+    int datepicker_width = 900 ;
+    int datepicker_heght = 800 ;
+    seleniumDriver.manage().window().setSize(new Dimension(datepicker_width , datepicker_heght ));
+    NgWebElement ng_dropdown = ngDriver.findElement(By.cssSelector("div.dropdown.open ul.dropdown-menu"));
+    assertThat(ng_dropdown,notNullValue());
+    highlight(ng_dropdown);
+    List<WebElement> ng_weekDates = ng_dropdown.findElements(NgBy.repeater("dateObject in week.dates"));
+    assertTrue(ng_weekDates.size() > 27 );
+    String monthDate = "12";
+    WebElement dateElement = ng_dropdown.findElements(NgBy.cssContainingText("td.ng-binding",monthDate)).get(0);
+    assertThat(dateElement,notNullValue());
+    highlight(dateElement);
+    System.err.println("Mondh Date: " + dateElement.getText());
+    dateElement.click();
+    NgWebElement ng_element = ng_dropdown.findElement(NgBy.model("data.inputOnTimeSet"));
+    assertThat(ng_element,notNullValue());
+    List<WebElement> ng_dataDates = ng_element.findElements(NgBy.repeater("dateObject in data.dates"));
+    assertThat(ng_dataDates.size(), equalTo(24));
+    String timeOfDay = "6:00 PM";
+    WebElement ng_hour = ng_element.findElements(NgBy.cssContainingText("span.hour", timeOfDay)).get(0);
+    assertThat(ng_hour,notNullValue());
+    highlight(ng_hour);
+    System.err.println("Hour of the day: " + ng_hour.getText());
+    ng_hour.click();
+    ngDriver.waitForAngular();
+    String specificMinute = "6:35 PM";
+    // reload,
+    try{
+      ng_element = ng_dropdown.findElement(NgBy.model("data.inputOnTimeSet"));
+      assertThat(ng_element,notNullValue());
+      highlight(ng_element);
+    } catch (StaleElementReferenceException e)  {
+      // org.openqa.selenium.StaleElementReferenceException in Phantom JS
+      // works fine with desktop browsers
+      if (isCIBuild) {
+        System.err.println("Ignoring StaleElementReferenceException" );
+      } else {
+        throw(e);
+      }
+    }
+    WebElement ng_minute;
+    try{
+      ng_minute = ng_element.findElements(NgBy.cssContainingText("span.minute", specificMinute)).get(0);
+      assertThat(ng_minute,notNullValue());
+      highlight(ng_minute);
+      System.err.println("Time of the day: " + ng_minute.getText());
+      ng_minute.click();
+    } catch (StaleElementReferenceException e)  {
+      if (isCIBuild) {
+        System.err.println("Ignoring StaleElementReferenceException" );
+      } else {
+        throw(e);
+      }
+    }
+    try{
+      ng_result = ngDriver.findElement(NgBy.model("data.inputOnTimeSet"));
+      highlight(ng_result);
+      System.err.println("Selected Date/time : " + ng_result.getAttribute("value"));
+      // "Thu May 12 2016 18:35:00 GMT-0400 (Eastern Standard Time)"
+      assertTrue(ng_result.getAttribute("value").matches("\\w{3} \\w{3} \\d{1,2} \\d{4} 18:35:00 GMT[+-]\\d{4} \\(.+\\)"));
+    } catch (StaleElementReferenceException e)  {
+      if (isCIBuild) {
+        System.err.println("Ignoring StaleElementReferenceException" );
+      } else {
+        throw(e);
+      }
+    }
+  }
+
+	// @Ignore
+  @Test
+  public void testDatePickerNavigation() throws Exception {
+    getPageContent("ng_datepicker.htm");
+    WebElement ng_result = ngDriver.findElement(NgBy.model("data.inputOnTimeSet"));
+    assertThat(ng_result, notNullValue());
+    assertTrue(ng_result.getAttribute("type").matches("text"));
+    ng_result.clear();
+    NgWebElement ng_calendar = ngDriver.findElement(By.cssSelector(".input-group-addon"));
+    assertThat(ng_calendar, notNullValue());
+    highlight(ng_calendar);
+    actions.moveToElement(ng_calendar.getWrappedElement()).click().build().perform();
+    NgWebElement ng_dropdown = ngDriver.findElement(By.cssSelector("div.dropdown.open ul.dropdown-menu"));
+    assertThat(ng_dropdown,notNullValue());
+    highlight(ng_dropdown);
+    NgWebElement ng_display = ngDriver.findElement(NgBy.binding("data.previousViewDate.display"));
+    assertThat(ng_display,notNullValue());
+    String dateDattern = "\\d{4}\\-(\\w{3})" ;
+    assertTrue(ng_display.getText().matches(dateDattern));
+    highlight(ng_display);
+    System.err.println("Current month: " + ng_display.getText());
+
+    Pattern pattern = Pattern.compile(dateDattern);
+		Matcher matcher = pattern.matcher(ng_display.getText());
+    ArrayList<String> months = new ArrayList<>(Arrays.asList(new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Dec", "Jan"}));
+    String followingMonth = null;
+		if (matcher.find()) {
+	     followingMonth = months.get(months.indexOf(matcher.group(1).toString()) + 1 );
+  	}
+
+    WebElement ng_right = ng_display.findElement(By.xpath("..")).findElement(By.className("right"));
+    assertThat(ng_right,notNullValue());
+    highlight(ng_right);
+    ng_right.click();
+    ng_display = ngDriver.findElement(NgBy.binding("data.previousViewDate.display"));
+    highlight(ng_display);
+    assertThat(ng_display.getText(),containsString(followingMonth));
+    System.err.println("Following month: " + ng_display.getText());
+  }
+
+	// @Ignore
   @Test
   public void testEvaluate() throws Exception {
     if (!isCIBuild) {
@@ -120,7 +251,7 @@ public class NgLocalFileTest {
     }
   }
 
-  // @Ignore
+	// @Ignore
   @Test
   public void testUpload1() throws Exception {
     if (!isCIBuild) {
@@ -164,14 +295,14 @@ public class NgLocalFileTest {
     }
   }
 
-  @Ignore
-  // TODO: abort the test on timeout
-  // http://stackoverflow.com/questions/2275443/how-to-timeout-a-thread
+	@Ignore
   @Test
   public void testUpload3() throws Exception {
-    // if (!isCIBuild) {
-      // return;
-    // }
+    if (isCIBuild) {
+       return;
+    }
+    // TODO: abort the test on timeout
+    // http://stackoverflow.com/questions/2275443/how-to-timeout-a-thread
     getPageContent("ng_upload3.htm");
     WebElement drop = ngDriver.findElement(NgBy.binding("dropText"));
     assertThat(drop, notNullValue());
@@ -194,7 +325,7 @@ public class NgLocalFileTest {
     button.click();
   }
 
-  // @Ignore
+	// @Ignore
   @Test
   public void testEvaluateEvenOdd() throws Exception {
     if (!isCIBuild) {
@@ -219,7 +350,33 @@ public class NgLocalFileTest {
     }
   }
 
-  // @Ignore
+	// @Ignore
+  @Test
+  public void testFindRepeaterElement() throws Exception {
+    if (!isCIBuild) {
+      return;
+    }			
+    getPageContent("ng_table2.htm");
+    int length = 0;
+    Pattern pattern = Pattern.compile("(\\d+)");
+		Matcher matcher = pattern.matcher(ngDriver.findElement(NgBy.binding("filtered.length")).getText());
+		if (matcher.find()) {
+	     length = Integer.parseInt(matcher.group(1).toString());
+  	}
+    for (int cnt=0; cnt != length;  cnt ++ ) {
+      Enumeration<WebElement> cells = Collections.enumeration(ngDriver.findElements(NgBy.repeaterElement("client in filtered ",cnt  ,"client.name")));
+      while (cells.hasMoreElements()){
+        WebElement currentCell = cells.nextElement();
+        actions.moveToElement(currentCell).build().perform();
+        highlight(currentCell);
+      }
+    }
+    List <WebElement>elements = ngDriver.findElements(NgBy.repeaterElement("client in filtered ", length  ,"client.name"));
+    assertThat(elements.size(), equalTo(0));
+  }
+
+
+	// @Ignore
   @Test
   public void testFindElementByRepeaterColumn() throws Exception {
     if (!isCIBuild) {
@@ -229,7 +386,7 @@ public class NgLocalFileTest {
     System.err.println("Customers:" + seleniumDriver.getPageSource());
     getPageContent("ng_service.htm");
     ngDriver.waitForAngular();
-    ArrayList<WebElement> countries =  new ArrayList<WebElement>(ngDriver.findElements(NgBy.repeaterColumn("person in people", "person.Country")));
+    ArrayList<WebElement> countries = new ArrayList<WebElement>(ngDriver.findElements(NgBy.repeaterColumn("person in people", "person.Country")));
     System.err.println("Found Countries.size() = " + countries.size() );
     assertTrue( countries.size() > 0 );
     Iterator<WebElement> countriesIterator = countries.iterator();
@@ -246,7 +403,7 @@ public class NgLocalFileTest {
     assertTrue(cnt == 3);	
   }		
 
-  // @Ignore
+	// @Ignore
   @Test
   public void testFindSelectedtOptionWithAlert() throws Exception {
     if (!isCIBuild) {
@@ -268,10 +425,10 @@ public class NgLocalFileTest {
 
     WebElement element = elements.get(0);
     ngDriver.waitForAngular();
-    
+
     assertThat(element, notNullValue());
     assertTrue(element.isDisplayed());
-    System.err.println("selected option: " + element.getText() + "\n" + element.getAttribute("outerHTML")  );
+    System.err.println("selected option: " + element.getText() + "\n" + element.getAttribute("outerHTML") );
     assertThat(element.getText(),containsString("One"));
 
     Iterator<WebElement> options = ngDriver.findElements(NgBy.options("count.id as count.name for count in countList")).iterator();
@@ -312,7 +469,7 @@ public class NgLocalFileTest {
 
     element = elements.get(0);
     assertThat(element, notNullValue());
-    System.err.println("selected option: " + element.getText() + "\n" + element.getAttribute("outerHTML")  );
+    System.err.println("selected option: " + element.getText() + "\n" + element.getAttribute("outerHTML") );
     assertThat(element.getText(),containsString("Two"));
     WebElement countSelected = ngDriver.findElement(NgBy.binding("countSelected"));
     assertThat(countSelected, notNullValue());
@@ -322,7 +479,7 @@ public class NgLocalFileTest {
     assertThat(valueOfCountSelected,equalTo(2));		
   }
 
-  // @Ignore
+	// @Ignore
   @Test
   public void testFindSelectedtOption() throws Exception {
     if (!isCIBuild) {
@@ -349,7 +506,7 @@ public class NgLocalFileTest {
     System.err.println("Selected option: " + element.getText());
   }
 
-  // @Ignore
+	// @Ignore
   @Test
   public void testChangeSelectedtOption() throws Exception {
     if (!isCIBuild) {
@@ -387,79 +544,79 @@ public class NgLocalFileTest {
   }
 
 
-		 // @Ignore
-	@Test
-	public void testChangeSelectedRepeaterOption() throws Exception {
-		if (!isCIBuild) {
-			return;
-		}
+		 @Ignore
+  @Test
+  public void testChangeSelectedRepeaterOption() throws Exception {
+    if (!isCIBuild) {
+      return;
+    }
     getPageContent("ng_repeat_selected.htm");
-		Iterator<WebElement> options = ngDriver.findElements(NgBy.repeater("fruit in Fruits")).iterator();
-		while (options.hasNext() ) {
-			WebElement option = (WebElement)  options.next();
-			System.err.println("available option: " + option.getText() );
-			if (option.getText().isEmpty()){
-				break;
-			}
-			if (option.getText().equalsIgnoreCase("Orange") ){		
+    Iterator<WebElement> options = ngDriver.findElements(NgBy.repeater("fruit in Fruits")).iterator();
+    while (options.hasNext() ) {
+      WebElement option = (WebElement)  options.next();
+      System.err.println("available option: " + option.getText() );
+      if (option.getText().isEmpty()){
+        break;
+      }
+      if (option.getText().equalsIgnoreCase("Orange") ){		
         System.err.println("selecting option: " + option.getText() );
         option.click();
       }
     }
-		ngDriver.waitForAngular();
+    ngDriver.waitForAngular();
 
     // System.err.println("findElements(NgBy.selectedRepeaterOption(...))");
-		List<WebElement> elements = ngDriver.findElements(NgBy.selectedRepeaterOption("fruit in Fruits"));
-		try{
-			assertThat(elements.size(), equalTo(1));
-		} catch (AssertionError e) {
+    List<WebElement> elements = ngDriver.findElements(NgBy.selectedRepeaterOption("fruit in Fruits"));
+    try{
+      assertThat(elements.size(), equalTo(1));
+    } catch (AssertionError e) {
       if (isCIBuild) {
         System.err.println("Skipped processing exception " + e.toString());
         return;
       } else {
         throw e;
       }
-		}
-		WebElement element = elements.get(0);
-		assertThat(element, notNullValue());
+    }
+    WebElement element = elements.get(0);
+    assertThat(element, notNullValue());
     System.err.println("selected option: " + element.getText() );
-		assertThat(element.getText(),containsString("Orange"));
+    assertThat(element.getText(),containsString("Orange"));
 
     /*
-	  Object fruitSelected = new NgWebElement(ngDriver,element).evaluate("fruit.Selected");
+    Object fruitSelected = new NgWebElement(ngDriver,element).evaluate("fruit.Selected");
     System.err.println("fruit.Selected = " + fruitSelected.toString()) ;
-	  assertTrue(parseBoolean(fruitSelected.toString()));
+    assertTrue(parseBoolean(fruitSelected.toString()));
     */
 
     // System.err.println("findElement(NgBy.selectedRepeaterOption(...))");
     NgWebElement ngRootWevelement = new NgWebElement(ngDriver, ngDriver.findElement(By.cssSelector("div[ng-app='myApp']")));
     List<NgWebElement> ngElements = ngRootWevelement.findNgElements(NgBy.selectedRepeaterOption("fruit in Fruits"));
     try{
-			assertThat(elements.size(), equalTo(1));
-		} catch (AssertionError e) {
+      assertThat(elements.size(), equalTo(1));
+    } catch (AssertionError e) {
       if (isCIBuild) {
         System.err.println("Skipped processing exception " + e.toString());
         return;
       } else {
         throw e;
       }
-		}
+    }
 
-		NgWebElement ngElement = ngElements.get(0);
-		assertThat(ngElement, notNullValue());
-		assertThat(ngElement.getWrappedElement() , notNullValue());
+    NgWebElement ngElement = ngElements.get(0);
+    assertThat(ngElement, notNullValue());
+    assertThat(ngElement.getWrappedElement() , notNullValue());
     System.err.println("selected option: " + ngElement.getText() );
 
-		// System.err.println("findNgElements(NgBy.selectedRepeaterOption(...))");
-		ngElement = ngDriver.findElement(NgBy.selectedRepeaterOption("fruit in Fruits"));
-		assertThat(ngElement, notNullValue());
-		assertThat(ngElement.getWrappedElement() , notNullValue());
-		System.err.println("selected option: " + ngElement.getText() );
-	}
+    // System.err.println("findNgElements(NgBy.selectedRepeaterOption(...))");
+    ngElement = ngDriver.findElement(NgBy.selectedRepeaterOption("fruit in Fruits"));
+    assertThat(ngElement, notNullValue());
+    assertThat(ngElement.getWrappedElement() , notNullValue());
+    System.err.println("selected option: " + ngElement.getText() );
+  }
 
 	// @Ignore
-	@Test
-	public void testMultiSelect2() throws Exception {
+  @Test
+  public void testMultiSelect2() throws Exception {
     // if (!isCIBuild) {
       // return;
     // }
@@ -484,7 +641,7 @@ public class NgLocalFileTest {
       WebElement element2 = element.findElement(By.tagName("span"));
       assertThat(element2, notNullValue());
       String classAttribute = element2.getAttribute("class");
-      // System.err.println( "option.name = " + optionName  + " " + classAttribute);
+      // System.err.println( "option.name = " + optionName + " " + classAttribute);
       matcher = pattern.matcher(classAttribute);
       if (matcher.find()){
 
@@ -499,16 +656,16 @@ public class NgLocalFileTest {
     elementsIterator = elements.iterator();
     while (elementsIterator.hasNext() ) {
       WebElement element = (WebElement ) elementsIterator.next();
-			System.err.format("%s\n", element.getText());
+      System.err.format("%s\n", element.getText());
     }
   }
 
-  // @Ignore
+	// @Ignore
   @Test
   public void testMultiSelect() throws Exception {
-    // if (!isCIBuild) {
-    //    return;
-    // }
+    if (!isCIBuild) {
+        return;
+    }
     getPageContent("ng_multi_select.htm");
     WebElement element = ngDriver.findElement(NgBy.model("selectedValues"));
     // use core Selenium
@@ -531,7 +688,7 @@ public class NgLocalFileTest {
 
     String selectedValues = ngDriver.findElement(NgBy.binding("selectedValues")).getText();
     System.err.println("Inspecting: " + selectedValues );
-    for (int cnt =  0 ; cnt != data.size() ; cnt ++ ) {
+    for (int cnt = 0 ; cnt != data.size() ; cnt ++ ) {
       String value = data.get(cnt);
       String expression = "\\\"" + value + "\\\"" ;
       Pattern pattern = Pattern.compile(expression);
@@ -558,7 +715,7 @@ public class NgLocalFileTest {
 
     selectedValues = ngDriver.findElement(NgBy.binding("selectedValues")).getText();
     System.err.println("Inspecting: " + selectedValues );
-    for (int cnt =  0 ; cnt != data.size() ; cnt ++ ) {
+    for (int cnt = 0 ; cnt != data.size() ; cnt ++ ) {
       String value = data.get(cnt);
       String expression = "\\\"" + value + "\\\"" ;
       Pattern pattern = Pattern.compile(expression);
@@ -568,7 +725,7 @@ public class NgLocalFileTest {
     }
   }
 
-  // @Ignore
+	// @Ignore
   @Test
   public void testFindElementByRepeaterWithBeginEnd() throws Exception {
     if (!isCIBuild) {
@@ -581,7 +738,7 @@ public class NgLocalFileTest {
     System.err.println(elements.get(0).getText() );
   }
 	
-  // @Ignore
+	// @Ignore
   @Test
   public void testFindElementByOptions() throws Exception {
     if (!isCIBuild) {
@@ -596,7 +753,7 @@ public class NgLocalFileTest {
     System.err.println(elements.get(1).getText() );
   }
 	
-  // @Ignore
+	// @Ignore
   @Test
   public void testFindElementByModel() throws Exception {
     if (!isCIBuild) {
@@ -628,29 +785,29 @@ public class NgLocalFileTest {
     System.err.println(required.getText()); // required: false
   }
 
-  // @Ignore
-  @Test
-  public void testFindRepeaterElement() throws Exception {
-    if (!isCIBuild) {
-      return;
-    }			
-    getPageContent("ng_basic.htm");
-    WebElement element = ngDriver.findElement(NgBy.repeaterElement("item in items",1,"item.b"));
-    System.err.println("item[row='1'][col='b'] = " + element.getText());
-    highlight(element);	
-    List <WebElement>elements = ngDriver.findElements(NgBy.repeaterElement("item in items",5,"item.a"));
-    assertThat(elements.size(), equalTo(0));
-  }
+  //@Ignore
+  // @Test
+  // public void testFindRepeaterElement() throws Exception {
+    // if (!isCIBuild) {
+      // return;
+    // }			
+    // getPageContent("ng_basic.htm");
+    // WebElement element = ngDriver.findElement(NgBy.repeaterElement("item in items",1,"item.b"));
+    // System.err.println("item[row='1'][col='b'] = " + element.getText());
+    // highlight(element);	
+    // List <WebElement>elements = ngDriver.findElements(NgBy.repeaterElement("item in items",5,"item.a"));
+    // assertThat(elements.size(), equalTo(0));
+  // }
 	
   // failing in Linux VM: PhantomJS has crashed
-  // @Ignore
+	// @Ignore
   @Test
   public void testElementTextIsGenerated() throws Exception {
     if (!isCIBuild) {
       return;
     }			
     getPageContent("ng_load_json_data.htm");
-    WebElement name  = ngDriver.findElement(NgBy.model("name"));
+    WebElement name = ngDriver.findElement(NgBy.model("name"));
     highlight(name);
     name.sendKeys("John");
     name.sendKeys(Keys.TAB);
@@ -666,7 +823,7 @@ public class NgLocalFileTest {
     assertTrue(greeting_text.length() > 0);
   }
 
-  // @Ignore
+	// @Ignore
   @Test
   public void testDropDownWatch() throws Exception {
     if (!isCIBuild) {
@@ -715,7 +872,7 @@ public class NgLocalFileTest {
     }
   }
 
-  // @Ignore
+	// @Ignore
   @Test
   public void testFindRepeaterRows() throws Exception {
     if (!isCIBuild) {
@@ -733,35 +890,135 @@ public class NgLocalFileTest {
     assertThat(todos.size(), equalTo(0));
   }
 	
-  // @Ignore
+	// @Ignore
   @Test
   public void testFindorderByField() throws Exception {
-    if (!isCIBuild) {
-      return;
-    }
+   // if (!isCIBuild) {
+   //   return;
+   // }
+    // Given there is a sorted data grid
     getPageContent("ng_headers_sort_example1.htm");
     String[] headers = new String[]{"First Name", "Last Name", "Age"};
-    for(String header : headers)
-    {
-      WebElement headerelement =  ngDriver.findElement(By.xpath("//th/a[contains(text(),'" + header + "')]"));
-      System.err.println(header);
-      headerelement.click();
-      ngDriver.waitForAngular();
-      List <WebElement> rows = ngDriver.findElements(NgBy.repeater("emp in data.employees"));
-      WebElement row = (WebElement) rows.get(0);
-      NgWebElement ngRow = new NgWebElement(ngDriver,row);
-      String field =  row.getAttribute("ng-order-by");
-      System.err.println( field  + ": " + ngRow.evaluate( field  ).toString());
+
+    Hashtable<String, String> header_columns = new Hashtable<String, String>();
+
+    header_columns.put("First Name", "emp.firstName");
+    header_columns.put("Last Name", "emp.lastName");
+    header_columns.put("Age", "age");
+
+    String[] sortOrders = new String[]{"descending", "ascending"};
+    for(String header : headers) {
+      for (int dir = 0; dir != 2; dir ++) {
+        // When grid is sorted by <header> in <sort order>
+        WebElement headerelement = ngDriver.findElement(By.xpath("//th/a[contains(text(),'" + header + "')]"));
+        headerelement.click();
+        ngDriver.waitForAngular();
+        // Then Angular sets the data sort order to <binding>, <sort order>
+        List <WebElement> rows = ngDriver.findElements(NgBy.repeater("emp in data.employees"));
+        WebElement row = (WebElement) rows.get(0);
+        NgWebElement ngRow = new NgWebElement(ngDriver,row);
+        String field = row.getAttribute("ng-order-by");
+        System.err.println( "Angular " + field + ": " + ngRow.evaluate(field).toString() + " " + sortOrders[dir] );
+        // Then the data in the grid is sorted by <header> in <sort order>
+        String binding = header_columns.get(header);
+        WebElement column_start = ngDriver.findElements(NgBy.repeaterElement("emp in data.employees", 0, binding )).get(0);
+        WebElement column_end = ngDriver.findElements(NgBy.repeaterElement("emp in data.employees", rows.size()-1, binding )).get(0);
+        System.err.println("column starts: " + column_start.getText());
+        System.err.println("column ends: " + column_end.getText());
+        // TODO: assert:
+        if ( dir  > 0 ){
+          System.err.println( (column_start.getText().compareTo(column_end.getText()) < 0 ));
+        } else {
+          System.err.println( (column_start.getText().compareTo(column_end.getText()) > 0 ) );
+        }
+      }
     }
   }
 
-  // @Ignore
+  // TODO: separate into class AngularUISelect.java
+	// @Ignore
+  @Test
+  public void testAngularUISelectHandleSelectedAndAvailable() throws Exception {
+    getPageContent("ng_ui_select_example1.htm");
+    List <WebElement> selectedColors = ngDriver.findElements(NgBy.repeater("$item in $select.selected"));
+
+    Iterator<WebElement> iteratorSelectedColors = selectedColors.iterator();
+    while (iteratorSelectedColors.hasNext()) {
+      WebElement selectedColor = (WebElement) iteratorSelectedColors.next();
+      NgWebElement ngSelectedColor = new NgWebElement(ngDriver,selectedColor);
+      highlight(selectedColor);
+      Object itemColor = ngSelectedColor.evaluate("$item");
+      System.err.println( "selected color: " + itemColor.toString() );
+    }
+    WebElement search = ngDriver.findElement(NgBy.model("$select.search"));
+    search.click();
+    ngDriver.waitForAngular();
+    List <WebElement> availableColors = ngDriver.findElements(By.cssSelector("div[role='option']"));
+    Iterator<WebElement> iteratorAvailableColors = availableColors.iterator();
+    while (iteratorAvailableColors.hasNext()) {
+      WebElement availableColor = (WebElement) iteratorAvailableColors.next();
+      NgWebElement ngAvailableColor = new NgWebElement(ngDriver,availableColor);
+      highlight(availableColor);
+      int availableColorIndex = -1;
+      try {
+        availableColorIndex = Integer.parseInt(ngAvailableColor.evaluate("$index").toString() );
+      } catch (Exception e) {}
+      System.err.println( "available color:" + availableColor.getText() + ",index = " + availableColorIndex );
+    }
+  }
+
+	// @Ignore
+  @Test
+  public void testAngularUISelectHandleSearch() throws Exception {
+    getPageContent("ng_ui_select_example1.htm");
+    String searchText = "Ma";
+    WebElement search = ngDriver.findElement(By.cssSelector("input[type='search']"));
+    search.sendKeys(searchText);
+    ngDriver.waitForAngular();
+    List <WebElement> availableColors = ngDriver.findElements(By.cssSelector("div[role='option']"));
+    Iterator<WebElement> iteratorAvailableColors = availableColors.iterator();
+    while (iteratorAvailableColors.hasNext()) {
+      WebElement availableColor = (WebElement) iteratorAvailableColors.next();
+      NgWebElement ngAvailableColor = new NgWebElement(ngDriver,availableColor);
+      highlight(availableColor);
+      assertThat(availableColor.getText(),containsString(searchText));
+      System.err.println( "search = " + searchText + ", found :" + availableColor.getText() );
+    }
+  }
+
+	// @Ignore
+  @Test
+  public void testAngularUISelectHandleDeselect() throws Exception {
+    getPageContent("ng_ui_select_example1.htm");
+    List <WebElement> selectedColors = ngDriver.findElements(NgBy.repeater("$item in $select.selected"));
+    while (selectedColors.size() != 0 ) {
+      selectedColors = ngDriver.findElements(NgBy.repeater("$item in $select.selected"));
+      Iterator<WebElement> iteratorSelectedColors = selectedColors.iterator();
+      while (iteratorSelectedColors.hasNext()) {
+        WebElement selectedColor = (WebElement) iteratorSelectedColors.next();
+        NgWebElement ngSelectedColor = new NgWebElement(ngDriver,selectedColor);
+        Object itemColor = ngSelectedColor.evaluate("$item");
+        System.err.println( "deselecting color: " + itemColor.toString() );
+        WebElement ng_close = ngSelectedColor.findElement(By.cssSelector("span[class *='close']"));
+        assertThat(ng_close, notNullValue());
+        assertThat(ng_close.getAttribute("ng-click"), notNullValue());
+        assertThat(ng_close.getAttribute("ng-click"), containsString("removeChoice"));
+        highlight(ng_close);
+        ng_close.click();
+        ngDriver.waitForAngular();
+      }
+    }
+    System.err.println( "Nothing is selected" );
+
+  }
+
+	// @Ignore
   @Test
   public void testPrintOrderByFieldColumn() throws Exception {
     if (!isCIBuild) {
       return;
     }
-    getPageContent("ng_headers_sort_example2.htm");
+    getPageContent("ng_headers_sort_example1.htm");
     // NOTE: This test will fail with "ng_headers_sort_example1.htm"
     // Exception:
     // no injector found for element argument to getTestability
@@ -769,17 +1026,17 @@ public class NgLocalFileTest {
     for(String header : headers)
     {
       for (int cnt = 0 ; cnt != 2; cnt ++) {
-        WebElement headerelement =  ngDriver.findElement(By.xpath("//th/a[contains(text(),'" + header + "')]"));
+        WebElement headerelement = ngDriver.findElement(By.xpath("//th/a[contains(text(),'" + header + "')]"));
         System.err.println("Clicking on header: " + header);
         headerelement.click();
         ngDriver.waitForAngular();
         List <WebElement> rows = ngDriver.findElements(NgBy.repeater("emp in data.employees"));
         WebElement row = (WebElement) rows.get(0);
         NgWebElement ngRow = new NgWebElement(ngDriver,row);
-        String field =  row.getAttribute("ng-order-by");
-        System.err.println( field  + ": " + ngRow.evaluate( field  ).toString());
-        String empField = "emp." + ngRow.evaluate( field  );
-        System.err.println( empField  + ":");
+        String field = row.getAttribute("ng-order-by");
+        System.err.println( field + ": " + ngRow.evaluate( field ).toString());
+        String empField = "emp." + ngRow.evaluate( field );
+        System.err.println( empField + ":");
         Iterator<WebElement> iteratorEmp = rows.iterator();
         while (iteratorEmp.hasNext()) {
           WebElement emp = (WebElement) iteratorEmp.next();
@@ -798,7 +1055,7 @@ public class NgLocalFileTest {
     }
   }
 
-  // @Ignore
+	// @Ignore
   @Test
   public void testFindAllBindings() throws Exception {
     if (!isCIBuild) {
@@ -822,13 +1079,52 @@ public class NgLocalFileTest {
     }
   }
 
-   // @Ignore
+	// @Ignore
+  @Test
+  public void testHover() throws InterruptedException {
+    // if (!isCIBuild) {
+    //   return;
+    // }
+
+    getPageContent("ng_hover1.htm");
+    // Hover over menu
+    WebElement element = seleniumDriver.findElement(By.id("hover"));
+    highlight(element);
+    actions.moveToElement(element).build().perform();
+    // Wait for the Angular 'hovering' property to get evaluated to true
+    WebDriverWait wait2 = new WebDriverWait(seleniumDriver, 120 );
+    wait2.pollingEvery(50,TimeUnit.MILLISECONDS);
+    wait2.until(new ExpectedCondition<Boolean>() {
+      // NOTE: 'until' only prints "hovering: true" and never "hovering: false"
+      @Override  
+      public Boolean apply(WebDriver d) {
+        NgWebDriver ngD = new NgWebDriver(d);
+        // org.openqa.selenium.WebDriverException: The WebDriver instance must implement JavaScriptExecutor interface.
+        NgWebElement ng_element = ngD.findElement(By.id("hover"));
+        Object value = ng_element.evaluate("hovering");
+        System.err.println( "hovering: " +  value.toString());
+        return parseBoolean(value.toString());
+      }
+    });
+    
+    actions.moveByOffset(0, 300).build().perform();
+    // NOTE: cannot find div[ng-show='true'] nor div[show='true']
+    // Wait for the tooltip div to get visible 
+    Thread.sleep(1000);
+    actions.moveToElement(element).build().perform();
+    try {
+      wait.until(ExpectedConditions.visibilityOf(seleniumDriver.findElement(By.cssSelector("div[ng-show='hovering']"))));
+    } catch (NoSuchElementException e  ) {
+    }
+  }
+   
+	@Ignore
   @Test
   public void testDropDown() throws Exception {
     if (!isCIBuild) {
       return;
     }
-    //  NOTE: works with Angular 1.2.13, fails with Angular 1.4.9
+    //  TODO: works with Angular 1.2.13, fails with Angular 1.4.9
     getPageContent("ng_dropdown.htm");
     Thread.sleep(1000);
     String optionsCountry = "country for (country, states) in countries";
@@ -889,11 +1185,7 @@ public class NgLocalFileTest {
   }
 
   private static void highlight(WebElement element) throws InterruptedException {
-    highlight(element,  100);
-  }
-
-  private static void highlight(WebElement element, long highlightInterval ) throws InterruptedException {
-    CommonFunctions.highlight(element, highlightInterval);
+	  CommonFunctions.highlight(element);
   }
 
   private static String getIdentity(WebElement element ) throws InterruptedException {
