@@ -92,6 +92,7 @@ public class NgButtonTest {
 		ngDriver = new NgWebDriver(seleniumDriver);
 	}
 
+
 	@Test
 	public void testButtonNgIf() throws Exception {
 		//if (isCIBuild) { // Alert not handled by PhantomJS
