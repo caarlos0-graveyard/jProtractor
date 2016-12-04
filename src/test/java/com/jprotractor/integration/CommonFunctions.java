@@ -7,12 +7,10 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.IOException;
-
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -26,8 +24,10 @@ import org.openqa.selenium.phantomjs.PhantomJSDriverService;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -63,15 +63,15 @@ public class CommonFunctions {
 			// For Vagrant box browser testing have localhost port 4444 forwarded to
 			// the hub 4444
 
-			DesiredCapabilities capabilities = new DesiredCapabilities("chrome", "",
+			DesiredCapabilities capabilities = new DesiredCapabilities("firefox", "",
 					Platform.ANY);
 			// seleniumDriver = new FirefoxDriver(capabilities);
 			// FirefoxProfile profile = new ProfilesIni().getProfile("default");
 			// profile.setEnableNativeEvents(false);
 			// capabilities.setCapability("firefox_profile", profile);
 
-			seleniumDriver = new RemoteWebDriver(new URL(
-					"http://127.0.0.1:4444/wd/hub"), capabilities);
+			seleniumDriver = new RemoteWebDriver(
+					new URL("http://127.0.0.1:4444/wd/hub"), capabilities);
 			return seleniumDriver;
 		} else {
 			DesiredCapabilities capabilities = new DesiredCapabilities("phantomjs",
@@ -127,15 +127,19 @@ public class CommonFunctions {
 		highlightInterval = value;
 	}
 
-	public static void highlight(WebElement element) throws InterruptedException {
-		int flexibleWait = 5;
-		long pollingInterval = 500;
-		WebDriverWait wait = new WebDriverWait(seleniumDriver, flexibleWait);
-		wait.pollingEvery(pollingInterval, TimeUnit.MILLISECONDS);
-		wait.until(ExpectedConditions.visibilityOf(element));
-		executeScript("arguments[0].style.border='3px solid yellow'", element);
-		Thread.sleep(highlightInterval);
-		executeScript("arguments[0].style.border=''", element);
+	public static void highlight(WebElement element) {
+		if (wait == null) {
+			wait = new WebDriverWait(seleniumDriver, flexibleWait);
+			wait.pollingEvery(pollingInterval, TimeUnit.MILLISECONDS);
+		}
+		try {
+			wait.until(ExpectedConditions.visibilityOf(element));
+			executeScript("arguments[0].style.border='3px solid yellow'", element);
+			Thread.sleep(highlightInterval);
+			executeScript("arguments[0].style.border=''", element);
+		} catch (InterruptedException e) {
+			// System.err.println("Ignored: " + e.toString());
+		}
 	}
 
 	public static Object executeScript(String script, Object... args) {
@@ -145,5 +149,20 @@ public class CommonFunctions {
 		} else {
 			throw new RuntimeException("Script execution failed.");
 		}
+	}
+
+	// custom wait e.g. while Login light box is visible
+	public static void waitWhileElementIsVisible(By locator) {
+		final By _locator = locator;
+		new WebDriverWait(seleniumDriver, flexibleWait)
+				.pollingEvery(pollingInterval, TimeUnit.SECONDS)
+				.until(new ExpectedCondition<Boolean>() {
+					@Override
+					public Boolean apply(WebDriver o) {
+						System.err.println("Size: " + o.findElements(_locator).size());
+						return (o.findElements(_locator).size() == 0);
+					}
+				});
+
 	}
 }

@@ -6,7 +6,7 @@ Being  a JS testing tool, [Angular Protractor](https://github.com/angular/protra
 On the other hand Protractor offers some [locator strategies](https://github.com/angular/protractor/blob/master/lib/clientsidescripts.js) that take advantage of Angular's features to testers - this project tries to keep these available.
 
 
-Currently supported Antular Proractor methods:
+Currently supported Angular Proractor methods:
 ```
 binding.js
 buttonText.js
