@@ -13,27 +13,25 @@ var waitForAngular = function(rootSelector, callback) {
             return;
         }
         if (!window.angular) {
-            throw new Error('window.angular is undefined. This could be either ' +
-                'because this is a non-angular page or because your test involves ' +
-                'client-side navigation, which can interfere with Protractor\'s ' +
-                'bootstrapping. See http://git.io/v4gXM for details');
+            throw new Error("window.angular is undefined");
         }
         if (angular.getTestability) {
             angular.getTestability(el).whenStable(callback);
         } else {
             if (!angular.element(el).injector()) {
-                throw new Error('root element (' + rootSelector + ') has no injector.' +
-                    ' this may mean it is not inside ng-app.');
+                throw new Error("root element (" + rootSelector + ") has no injector.");
             }
             angular.element(el).injector().get('$browser').
             notifyWhenNoOutstandingRequests(callback);
         }
     } catch (err) {
-        callback(err.message);
+      callback('exception: ' + err.message);
     }
 };
+// var arguments = []
+var log = function(message){ console.log("callback: " + message); return(message); }
 
-var rootSelector = arguments[0];
-var callback = arguments[1];
+var rootSelector = arguments[0] || 'document';
+var callback = arguments[1] || log;
 
 waitForAngular(rootSelector, callback);

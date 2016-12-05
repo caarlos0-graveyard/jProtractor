@@ -14,121 +14,123 @@ import org.openqa.selenium.internal.WrapsDriver;
  * Angular WebDriver Implementation.
  */
 public final class NgWebDriver implements WebDriver, WrapsDriver {
-    private final WebDriver driver;
-    private final JavascriptExecutor jsExecutor;
-    private final String root;
+	private final WebDriver webDriver;
+	private final JavascriptExecutor jsExecutor;
+	private final String rootElement;
+	public boolean ignoreSynchronization;
 
-    /**
-     * Ctor.
-     * @param drv Parent web driver.
-     */
-    public NgWebDriver(final WebDriver drv) {
-        this(drv, "body");
+  /**
+   * Ctor.
+   * @param webDriver Parent web driver.
+   */
+  public NgWebDriver(final WebDriver webDriver) {
+    this(webDriver, "body");
+  }
+
+  /**
+   * Ctor.
+   * @param webDriver Parent Web Driver.
+   * @param rootElement Root Element.
+   */
+  public NgWebDriver(
+    final WebDriver webDriver,
+    final String rootElement
+  ) {
+    if (!(webDriver instanceof JavascriptExecutor)) {
+      throw new WebDriverException( "The WebDriver instance must implement JavaScriptExecutor interface.");
     }
+    this.webDriver = webDriver;
+    this.jsExecutor = (JavascriptExecutor) webDriver;
+    this.rootElement = rootElement;
+  }
 
-    /**
-     * Ctor.
-     * @param drv Parend Web Driver.
-     * @param rootel Root Element.
-     */
-    public NgWebDriver(
-        final WebDriver drv,
-        final String rootel
-    ) {
-        if (!(drv instanceof JavascriptExecutor)) {
-            throw new WebDriverException(
-                "The WebDriver instance must implement the " +
-                    "JavaScriptExecutor interface."
-            );
-        }
+  /**
+   * Ctor.
+   * @param webDriver Parent Web Driver.
+   * @param ignoreSynchronization flag indicating non-Angular sites
+   */
+  public NgWebDriver(final WebDriver webDriver, final boolean ignoreSynchronization) {
+    this(webDriver);
+    this.ignoreSynchronization = ignoreSynchronization;
+  }
 
-        this.driver = drv;
-        this.jsExecutor = (JavascriptExecutor) drv;
-        this.root = rootel;
+  @Override
+  public WebDriver getWrappedDriver() {
+    return this.webDriver;
+  }
+
+  @Override
+  public void close() {
+    this.webDriver.close();
+  }
+
+  @Override
+  public NgWebElement findElement(final By by) {
+    this.waitForAngular();
+    return new NgWebElement(this, this.webDriver.findElement(by));
+  }
+
+  @Override
+  public List<WebElement> findElements(final By by) {
+    return this.webDriver.findElements(by);
+  }
+
+  @Override
+  public void get(final String property) {
+    this.waitForAngular();
+    this.webDriver.get(property);
+  }
+
+  @Override
+  public String getCurrentUrl() {
+    return this.webDriver.getCurrentUrl();
+  }
+
+  @Override
+  public String getPageSource() {
+    this.waitForAngular();
+    return this.webDriver.getPageSource();
+  }
+
+  @Override
+  public String getTitle() {
+    this.waitForAngular();
+    return this.webDriver.getTitle();
+  }
+
+  @Override
+  public String getWindowHandle() {
+    return this.webDriver.getWindowHandle();
+  }
+
+  @Override
+  public Set<String> getWindowHandles() {
+    return this.webDriver.getWindowHandles();
+  }
+
+  @Override
+  public WebDriver.Options manage() {
+    return this.webDriver.manage();
+  }
+
+  @Override
+  public WebDriver.Navigation navigate() {
+    return new NgNavigation(this.webDriver.navigate());
+  }
+
+  @Override
+  public void quit() {
+    this.webDriver.quit();
+  }
+
+  @Override
+  public WebDriver.TargetLocator switchTo() {
+    return this.webDriver.switchTo();
+  }
+
+  public void waitForAngular() {	
+    if (!this.ignoreSynchronization) {
+      this.jsExecutor.executeAsyncScript(new WaitForAngular().content(),this.rootElement);
     }
-
-    @Override
-    public WebDriver getWrappedDriver() {
-        return this.driver;
-    }
-
-    @Override
-    public void close() {
-        this.driver.close();
-    }
-
-    @Override
-    public NgWebElement findElement(final By by) {
-        this.waitForAngular();
-        return new NgWebElement(this, this.driver.findElement(by));
-    }
-
-    @Override
-    public List<WebElement> findElements(final By by) {
-        return this.driver.findElements(by);
-    }
-
-    @Override
-    public void get(final String arg0) {
-        this.waitForAngular();
-        this.driver.get(arg0);
-    }
-
-    @Override
-    public String getCurrentUrl() {
-        this.waitForAngular();
-        return this.driver.getCurrentUrl();
-    }
-
-    @Override
-    public String getPageSource() {
-        this.waitForAngular();
-        return this.driver.getPageSource();
-    }
-
-    @Override
-    public String getTitle() {
-        this.waitForAngular();
-        return this.driver.getTitle();
-    }
-
-    @Override
-    public String getWindowHandle() {
-        this.waitForAngular();
-        return this.driver.getWindowHandle();
-    }
-
-    @Override
-    public Set<String> getWindowHandles() {
-        this.waitForAngular();
-        return this.driver.getWindowHandles();
-    }
-
-    @Override
-    public WebDriver.Options manage() {
-        return this.driver.manage();
-    }
-
-    @Override
-    public WebDriver.Navigation navigate() {
-        return new NgNavigation(this.driver.navigate());
-    }
-
-    @Override
-    public void quit() {
-        this.driver.quit();
-
-    }
-
-    @Override
-    public WebDriver.TargetLocator switchTo() {
-        return this.driver.switchTo();
-    }
-
-    public void waitForAngular() {
-        this.jsExecutor.executeAsyncScript(
-            new WaitForAngular().content(),
-            this.root
-        );
-    }
+  }
 }
