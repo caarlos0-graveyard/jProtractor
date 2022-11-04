@@ -8,6 +8,7 @@ import static com.jcabi.matchers.RegexMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.time.Duration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,8 +87,10 @@ public class NgButtonTest {
 		seleniumDriver = CommonFunctions.getSeleniumDriver();
 		seleniumDriver.manage().window().setSize(new Dimension(width , height ));
 		seleniumDriver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS).implicitlyWait(implicitWait, TimeUnit.SECONDS).setScriptTimeout(10, TimeUnit.SECONDS);
-		wait = new WebDriverWait(seleniumDriver, flexibleWait );
-		wait.pollingEvery(pollingInterval,TimeUnit.MILLISECONDS);
+		wait = new WebDriverWait(seleniumDriver,
+				Duration.ofSeconds(flexibleWait));
+
+		wait.pollingEvery(Duration.ofMillis(pollingInterval));
 		actions = new Actions(seleniumDriver);		
 		ngDriver = new NgWebDriver(seleniumDriver);
 	}

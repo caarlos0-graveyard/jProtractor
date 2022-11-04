@@ -10,6 +10,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.time.Duration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,9 +90,11 @@ public class NgCalculatorTest {
 		seleniumDriver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS)
 				.implicitlyWait(implicitWait, TimeUnit.SECONDS)
 				.setScriptTimeout(10, TimeUnit.SECONDS);
-		wait = new WebDriverWait(seleniumDriver, flexibleWait);
-		wait.pollingEvery(pollingInterval, TimeUnit.MILLISECONDS);
-		actions = new Actions(seleniumDriver);
+		wait = new WebDriverWait(seleniumDriver,
+				Duration.ofSeconds(flexibleWait));
+
+		wait.pollingEvery(Duration.ofMillis(pollingInterval));
+actions = new Actions(seleniumDriver);
 		ngDriver = new NgWebDriver(seleniumDriver);
 	}
 

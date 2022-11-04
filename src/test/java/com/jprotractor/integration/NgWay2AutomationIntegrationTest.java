@@ -20,6 +20,7 @@ import java.net.URL;
 import java.io.IOException;
 
 import static java.lang.Boolean.*;
+import java.time.Duration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,8 +96,10 @@ public class NgWay2AutomationIntegrationTest {
 		seleniumDriver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS)
 				.implicitlyWait(implicitWait, TimeUnit.SECONDS)
 				.setScriptTimeout(10, TimeUnit.SECONDS);
-		wait = new WebDriverWait(seleniumDriver, flexibleWait);
-		wait.pollingEvery(pollingInterval, TimeUnit.MILLISECONDS);
+		wait = new WebDriverWait(seleniumDriver,
+				Duration.ofSeconds(flexibleWait));
+
+		wait.pollingEvery(Duration.ofMillis(pollingInterval));
 		actions = new Actions(seleniumDriver);
 		ngDriver = new NgWebDriver(seleniumDriver);
 		CommonFunctions.setHighlightTimeout(1000);

@@ -6,9 +6,11 @@ import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.internal.WrapsElement;
+import org.openqa.selenium.WrapsElement;
 
 /**
  * Angular Web Element.
@@ -145,4 +147,16 @@ public final class NgWebElement implements WebElement, WrapsElement {
         this.driver.waitForAngular();
         this.element.submit();
     }
+        // http://stackoverflow.com/questions/39310090/selenium-upgrade-error
+    @Override
+    public Rectangle getRect() {
+        return this.element.getRect();
+    }
+
+    @Override
+    public <T> T getScreenshotAs(OutputType<T> target) {
+        return this.element.getScreenshotAs(target);
+
+    }
+
 }
