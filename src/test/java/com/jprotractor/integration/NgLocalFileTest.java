@@ -8,6 +8,7 @@ import static org.junit.Assume.*;
 import java.io.IOException;
 import static java.lang.Boolean.*;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -98,8 +99,10 @@ public class NgLocalFileTest {
 		seleniumDriver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS)
 				.implicitlyWait(implicitWait, TimeUnit.SECONDS)
 				.setScriptTimeout(10, TimeUnit.SECONDS);
-		wait = new WebDriverWait(seleniumDriver, flexibleWait);
-		wait.pollingEvery(pollingInterval, TimeUnit.MILLISECONDS);
+		wait = new WebDriverWait(seleniumDriver,
+				Duration.ofSeconds(flexibleWait));
+
+		wait.pollingEvery(Duration.ofMillis(pollingInterval));
 		actions = new Actions(seleniumDriver);
 		ngDriver = new NgWebDriver(seleniumDriver);
 	}
@@ -1211,9 +1214,11 @@ public class NgLocalFileTest {
 		highlight(element);
 		actions.moveToElement(element).build().perform();
 		// Wait for the Angular 'hovering' property to get evaluated to true
-		WebDriverWait wait2 = new WebDriverWait(seleniumDriver, 120);
-		wait2.pollingEvery(50, TimeUnit.MILLISECONDS);
-		wait2.until(new ExpectedCondition<Boolean>() {
+		WebDriverWait wait2 = new WebDriverWait(seleniumDriver,
+				Duration.ofSeconds(120));
+
+		wait.pollingEvery(Duration.ofMillis(50));
+wait2.until(new ExpectedCondition<Boolean>() {
 			// NOTE: 'until' only prints "hovering: true" and never "hovering: false"
 			@Override
 			public Boolean apply(WebDriver d) {

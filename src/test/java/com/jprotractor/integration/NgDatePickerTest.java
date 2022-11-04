@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assume.*;
 
 import java.io.IOException;
+import java.time.Duration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,8 +97,10 @@ public class NgDatePickerTest {
 		driver.manage().timeouts().pageLoadTimeout(50, TimeUnit.SECONDS)
 				.implicitlyWait(implicitWait, TimeUnit.SECONDS)
 				.setScriptTimeout(10, TimeUnit.SECONDS);
-		wait = new WebDriverWait(driver, flexibleWait);
-		wait.pollingEvery(pollingInterval, TimeUnit.MILLISECONDS);
+		wait = new WebDriverWait(driver,
+				Duration.ofSeconds(flexibleWait));
+
+		wait.pollingEvery(Duration.ofMillis(pollingInterval));
 		actions = new Actions(driver);
 		ngDriver = new NgWebDriver(driver);
 	}
@@ -117,7 +120,7 @@ public class NgDatePickerTest {
 		// Arrange
 		final String searchText = "Embedded calendar";
 		try {
-			(new WebDriverWait(driver, 5)).until(new ExpectedCondition<Boolean>() {
+(new WebDriverWait(driver, Duration.ofSeconds(5))).until(new ExpectedCondition<Boolean>() {
 				@Override
 				public Boolean apply(WebDriver d) {
 					Iterator<WebElement> elements = d
@@ -202,7 +205,8 @@ public class NgDatePickerTest {
 		}
 
 		try {
-			(new WebDriverWait(driver, 5)).until(new ExpectedCondition<Boolean>() {
+			(new WebDriverWait(driver, Duration.ofSeconds(5))).until(new ExpectedCondition<Boolean>() {
+
 				@Override
 				public Boolean apply(WebDriver d) {
 					Iterator<WebElement> elements = d
@@ -280,8 +284,8 @@ public class NgDatePickerTest {
 		// Arrange
 		final String searchText = "Drop-down Datetime with input box";
 		try {
-			(new WebDriverWait(driver, 5)).until(new ExpectedCondition<Boolean>() {
-				@Override
+			(new WebDriverWait(driver, Duration.ofSeconds(5))).until(new ExpectedCondition<Boolean>() {
+@Override
 				public Boolean apply(WebDriver d) {
 					Iterator<WebElement> elements = d
 							.findElements(By.className("col-sm-6")).iterator();
